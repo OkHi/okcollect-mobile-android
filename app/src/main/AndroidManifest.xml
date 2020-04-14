@@ -23,12 +23,13 @@
         <activity
             android:name="io.okcollect.android.activity.TestActivity"
             android:theme="@style/AppTheme">
-
+<!--
                         <intent-filter>
                             <action android:name="android.intent.action.MAIN" />
 
                             <category android:name="android.intent.category.LAUNCHER" />
                         </intent-filter>
+            -->
 
         </activity>
         <activity
@@ -46,7 +47,7 @@
             android:enabled="true"
             android:exported="true" />
 
-
+<!--
         <service
             android:name="io.okcollect.android.services.LocationService"
             android:enabled="true"
@@ -62,6 +63,7 @@
             android:name="io.okcollect.android.services.GeofenceTransitionsJobIntentService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        -->
     </application>
 
 </manifest>
