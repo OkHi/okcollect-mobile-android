@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -27,7 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-public class OkHeartActivity extends AppCompatActivity {
+public class OkHeartActivityCopy extends AppCompatActivity {
 
     private static final String TAG = "OkHeartActivity";
     private static WebView myWebView;
@@ -79,7 +78,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setFirstname(String firstname) {
-        OkHeartActivity.firstname = firstname;
+        OkHeartActivityCopy.firstname = firstname;
     }
 
     private static String getLastname() {
@@ -87,7 +86,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setLastname(String lastname) {
-        OkHeartActivity.lastname = lastname;
+        OkHeartActivityCopy.lastname = lastname;
     }
 
     private static String getPhonenumber() {
@@ -95,7 +94,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setPhonenumber(String phonenumber) {
-        OkHeartActivity.phonenumber = phonenumber;
+        OkHeartActivityCopy.phonenumber = phonenumber;
     }
 
     private static Double getLat() {
@@ -103,7 +102,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setLat(Double lat) {
-        OkHeartActivity.lat = lat;
+        OkHeartActivityCopy.lat = lat;
     }
 
     private static Double getLng() {
@@ -111,7 +110,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setLng(Double lng) {
-        OkHeartActivity.lng = lng;
+        OkHeartActivityCopy.lng = lng;
     }
 
     private static Float getAcc() {
@@ -119,11 +118,11 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void setAcc(Float acc) {
-        OkHeartActivity.acc = acc;
+        OkHeartActivityCopy.acc = acc;
     }
 
     private static void displayLog(String log) {
-        Log.i(TAG, log);
+        //Log.i(TAG, log);
     }
 
     private static boolean isCompletedWell() {
@@ -131,7 +130,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     public static void setCompletedWell(boolean completedWell) {
-        OkHeartActivity.completedWell = completedWell;
+        OkHeartActivityCopy.completedWell = completedWell;
     }
 
     private static boolean isIsWebInterface() {
@@ -139,7 +138,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     public static void setIsWebInterface(boolean isWebInterface) {
-        OkHeartActivity.isWebInterface = isWebInterface;
+        OkHeartActivityCopy.isWebInterface = isWebInterface;
     }
 
     @Override
@@ -149,7 +148,6 @@ public class OkHeartActivity extends AppCompatActivity {
         displayLog("start");
         dataProvider = new io.okcollect.android.database.DataProvider(this);
         environment = dataProvider.getPropertyValue("environment");
-        apiKey = dataProvider.getPropertyValue("authtoken");
         displayLog("environment " + environment);
 
         /*
@@ -175,6 +173,8 @@ public class OkHeartActivity extends AppCompatActivity {
         logo = null;
         verify = "false";
 
+        //OkHi.initialize("r:b59a93ba7d80a95d89dff8e4c52e259a", true, false);
+        //OkHi.customize("rgb(0,179,255)", "Mula", "https://cdn.okhi.co/okhi-logo-white.svg");
 
         try {
             Bundle bundle = getIntent().getExtras();
@@ -199,10 +199,7 @@ public class OkHeartActivity extends AppCompatActivity {
             } catch (Exception e) {
                 displayLog("uniqueId error " + e.toString());
             }
-            //apiKey = dataProvider.getPropertyValue("applicationKey");
-            displayLog("applicationKey"+apiKey);
 
-            /*
             File filesDirVerify = new File(getFilesDir() + "/verify.txt");
             if (filesDirVerify.exists()) {
                 displayLog("filesDirVerify exists");
@@ -232,7 +229,6 @@ public class OkHeartActivity extends AppCompatActivity {
             } else {
                 displayLog("filesdir does not exist");
             }
-            */
 
             File filesDirCustom = new File(getFilesDir() + "/custom.txt");
             if (filesDirCustom.exists()) {
@@ -292,8 +288,85 @@ public class OkHeartActivity extends AppCompatActivity {
 
         }
 
-        myWebView = OkHeartActivity.this.findViewById(io.okcollect.android.R.id.webview);
+        /*
+        firstname = "Ramogi";
+        lastname = "Ochola";
+        phonenumber = "+254713567907";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("firstName", firstname);
+            jsonObject.put("lastName", lastname);
+            jsonObject.put("phone", phonenumber);
+            OkHi.displayClient(okHiCallback, jsonObject);
+        } catch (JSONException e) {
+            displayLog("json exception error " + e.toString());
+        }
+        */
+        //displayLog("color " + color + " name " + name + " logo " + logo);
+        //displayLog("appbarcolor " + appbarcolor + " appbarvisible " + appbarvisible + " enablestreetview " + enablestreetview);
+
+/*
+        firstname = "Ramogi";
+        lastname = "Ochola";
+        phonenumber = "+254713567907";
+        */
+
+        //apiKey = "r:b59a93ba7d80a95d89dff8e4c52e259a";
+
+
+        //apiKey = "r:ee30a6552f7e5dfab48f4234bd1ffc1b";
+
+        //apiKey = "r:b4877fc0324225741db19553d67f147b";
+
+        myWebView = OkHeartActivityCopy.this.findViewById(io.okcollect.android.R.id.webview);
         myWebView.setWebViewClient(new MyWebViewClient());
+
+        /*
+        if(verify != null){
+            if(verify.length() > 0){
+                if(verify.equalsIgnoreCase("true")){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                        }, 0);
+                    }
+                    else{
+                        ActivityCompat.requestPermissions(this, new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                        }, 0);
+                    }
+                }
+                else if(verify.equalsIgnoreCase("false")){
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    }, 0);
+                }
+                else{
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    }, 0);
+                }
+            }
+            else{
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 0);
+            }
+        }
+        else{
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            }, 0);
+        }
+        */
 
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -309,28 +382,94 @@ public class OkHeartActivity extends AppCompatActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setDomStorageEnabled(true);
-        myWebView.addJavascriptInterface(new WebAppInterface(OkHeartActivity.this, apiKey), "Android");
-        //myWebView.loadUrl("https://manager-v5.okhi.dev");
+        //return this line
+       // myWebView.addJavascriptInterface(new WebAppInterface(OkHeartActivityCopy.this, apiKey), "Android");
+        //myWebView.loadUrl("https://manager-v4.okhi.dev");
         //myWebView.loadUrl("https://7b70b228.ngrok.io");
 
 
         if (environment != null) {
             if (environment.length() > 0) {
                 if (environment.equalsIgnoreCase("PROD")) {
-                    myWebView.loadUrl("https://manager-v5.okhi.io");
+                    myWebView.loadUrl("https://manager-v4.okhi.co");
                 } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                    myWebView.loadUrl("https://dev-manager-v5.okhi.io");
+                    myWebView.loadUrl("https://manager-v4.okhi.dev");
                 } else if (environment.equalsIgnoreCase("SANDBOX")) {
-                    myWebView.loadUrl("https://sandbox-manager-v5.okhi.io");
+                    myWebView.loadUrl("https://sandbox-manager-v4.okhi.dev");
                 } else {
-                    myWebView.loadUrl("https://manager-v5.okhi.io");
+                    myWebView.loadUrl("https://manager-v4.okhi.co");
                 }
             } else {
-                myWebView.loadUrl("https://manager-v5.okhi.io");
+                myWebView.loadUrl("https://manager-v4.okhi.co");
             }
         } else {
-            myWebView.loadUrl("https://manager-v5.okhi.io");
+            myWebView.loadUrl("https://manager-v4.okhi.co");
         }
+
+        /*
+        if(productionVersion){
+            myWebView.loadUrl("https://manager-v4.okhi.co");
+        }
+        else if(DEVMASTER){
+            myWebView.loadUrl("https://manager-v4.okhi.dev");
+        }else if(SANDBOX){
+            myWebView.loadUrl("https://sandbox-manager-v4.okhi.dev");
+        }
+        else{
+            myWebView.loadUrl("https://manager-v4.okhi.co");
+        }
+        */
+
+        /*
+        if (apiKey != null) {
+            if (apiKey.equalsIgnoreCase("r:6d828427b625cda9bf9013dd80a93f97")) {
+                myWebView.loadUrl("https://manager-v4.okhi.dev");
+            } else if (apiKey.equalsIgnoreCase("r:ee30a6552f7e5dfab48f4234bd1ffc1b")) {
+                myWebView.loadUrl("https://sandbox-manager-v4.okhi.dev");
+            } else {
+                myWebView.loadUrl("https://manager-v4.okhi.co");
+            }
+        } else {
+            // myWebView.loadUrl("https://manager-v4.okhi.co");
+        }
+        */
+
+
+        /*
+        if(environment == null){
+            if (apiKey != null) {
+                if (apiKey.equalsIgnoreCase("r:6d828427b625cda9bf9013dd80a93f97")) {
+                    environment = "DEVMASTER";
+                    myWebView.loadUrl("https://manager-v4.okhi.dev");
+                } else if (apiKey.equalsIgnoreCase("r:ee30a6552f7e5dfab48f4234bd1ffc1b")) {
+                    environment = "SANDBOX";
+                    myWebView.loadUrl("https://sandbox-manager-v4.okhi.dev");
+                } else {
+                    environment = "PROD";
+                    myWebView.loadUrl("https://manager-v4.okhi.co");
+                }
+            } else {
+                // myWebView.loadUrl("https://manager-v4.okhi.co");
+            }
+        }
+        else{
+            if(environment.length() > 0){
+
+            }
+            else{
+                if (apiKey.equalsIgnoreCase("r:6d828427b625cda9bf9013dd80a93f97")) {
+                    environment = "DEVMASTER";
+                    myWebView.loadUrl("https://manager-v4.okhi.dev");
+                } else if (apiKey.equalsIgnoreCase("r:ee30a6552f7e5dfab48f4234bd1ffc1b")) {
+                    environment = "SANDBOX";
+                    myWebView.loadUrl("https://sandbox-manager-v4.okhi.dev");
+                } else {
+                    environment = "PROD";
+                    myWebView.loadUrl("https://manager-v4.okhi.co");
+                }
+            }
+        }
+        */
 
         myWebView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -351,6 +490,22 @@ public class OkHeartActivity extends AppCompatActivity {
         }
 
         try {
+            /*
+            Boolean production = false;
+            if (apiKey != null) {
+                if (apiKey.equalsIgnoreCase("r:6d828427b625cda9bf9013dd80a93f97")) {
+
+                } else if (apiKey.equalsIgnoreCase("r:ee30a6552f7e5dfab48f4234bd1ffc1b")) {
+
+                } else {
+                    production = true;
+                }
+            } else {
+                //production = true;
+            }
+
+            final Boolean productionVersion = production;
+            */
 
             JSONObject identifyjson = new JSONObject();
             identifyjson.put("userId", "8VXRqG8YhN");
@@ -377,7 +532,24 @@ public class OkHeartActivity extends AppCompatActivity {
                                 eventjson.put("event", "SDK Initialization");
 
                                 JSONObject trackjson = new JSONObject();
-                                trackjson.put("environment", environment);
+
+                                if (environment != null) {
+                                    if (environment.length() > 0) {
+                                        if (environment.equalsIgnoreCase("PROD")) {
+                                            trackjson.put("environment", "PROD");
+                                        } else if (environment.equalsIgnoreCase("DEVMASTER")) {
+                                            trackjson.put("environment", "DEVMASTER");
+                                        } else if (environment.equalsIgnoreCase("SANDBOX")) {
+                                            trackjson.put("environment", "SANDBOX");
+                                        } else {
+                                            trackjson.put("environment", "PROD");
+                                        }
+                                    } else {
+                                        trackjson.put("environment", "PROD");
+                                    }
+                                } else {
+                                    trackjson.put("environment", "PROD");
+                                }
                                 trackjson.put("event", "SDK start");
 
                                 trackjson.put("action", "start");
@@ -418,7 +590,6 @@ public class OkHeartActivity extends AppCompatActivity {
 
     public void startApp() {
         //checkInternet();
-        displayLog("startApp ");
 
         try {
             if (color != null) {
@@ -470,20 +641,13 @@ public class OkHeartActivity extends AppCompatActivity {
             displayLog("color " + color + " name " + name + " logo " + logo);
             displayLog("appbarcolor " + appbarcolor + " appbarvisible " + appbarvisible + " enablestreetview " + enablestreetview);
 
-            String tologinwith;
-            if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
-                tologinwith = "+2547" + phonenumber.substring(2);
-            } else {
-                tologinwith = phonenumber;
-            }
-            /*
             String stuff = "{\n" +
                     "  \"message\": \"select_location\",\n" +
                     "  \"payload\": {\n" +
                     "    \"user\": {\n" +
                     "      \"firstName\": \"" + firstname + "\",\n" +
                     "      \"lastName\": \"" + lastname + "\",\n" +
-                    "      \"phone\": \"" + tologinwith + "\"\n" +
+                    "      \"phone\": \"" + phonenumber + "\"\n" +
                     "    },\n" +
                     "    \"style\": {\n" +
                     "      \"base\": {\n" +
@@ -502,7 +666,7 @@ public class OkHeartActivity extends AppCompatActivity {
                     "    },\n" +
 
                     "    \"auth\": {\n" +
-                    "      \"authToken\": \"" + apiKey + "\"\n" +
+                    "      \"apiKey\": \"" + apiKey + "\"\n" +
                     "    },\n" +
                     "    \"parent\": {\n" +
                     "      \"name\": \"okHeartAndroidSDK\",\n" +
@@ -510,67 +674,11 @@ public class OkHeartActivity extends AppCompatActivity {
                     "      \"build\": \"" + io.okcollect.android.BuildConfig.VERSION_CODE + "\",\n" +
                     "      \"namespace\": \"com.develop.okheartandroidsdk.okhi\"\n" +
                     "    }\n" +
-                    "    \"context\": {\n" +
-                    "      \"platform\": \"android\",\n" +
-                    "      \"developer\": \"okhi\",\n" +
-                    "      \"library\": {\n" +
-                    "           \"name\": \"okcollect-android-sdk\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "       },\n" +
-                    "      \"container\": {\n" +
-                    "           \"name\": \"Quickteller App\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "       },\n" +
-                    "    }\n" +
                     "  }\n" +
                     "}";
-            */
 
-            String payload = "{\n" +
-                    "      message: 'select_location',\n" +
-                    "      payload: {\n" +
-                    "        style: {\n" +
-                    "          base: {\n" +
-                    "            \"color\": \"" + color + "\",\n" +
-                    "            \"name\": \"" + name + "\",\n" +
-                    "            \"logo\": \"" + logo + "\"\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "        user: {\n" +
-                    "      \"firstName\": \"" + firstname + "\",\n" +
-                    "      \"lastName\": \"" + lastname + "\",\n" +
-                    "      \"phone\": \"" + tologinwith + "\"\n" +
-                    "        },\n" +
-                    "        auth: {\n" +
-                    "      \"authToken\": \"" + apiKey + "\"\n" +
-                    "      },\n" +
-                    "        context: {\n" +
-                    "          container: {\n" +
-                    "           \"name\": \"Quickteller App\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "          },\n" +
-                    "          developer: {\n" +
-                    "            name: 'okhi',\n" +
-                    "          },\n" +
-                    "          library: {\n" +
-                    "           \"name\": \"okcollect-android-sdk\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "          },\n" +
-                    "          platform: {\n" +
-                    "            name: 'mobile',\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "        config: {\n" +
-                    "      \"streetView\": \"" + enablestreetview + "\",\n" +
-                    "          appBar: {\n" +
-                    "           \"color\": \"" + appbarcolor + "\",\n" +
-                    "           \"visible\": " + appbarvisible + "\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "      },\n" +
-                    "    }";
-            displayLog(payload);
-            myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + payload + ")", null);
+            displayLog(stuff);
+            myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + stuff + ")", null);
         } catch (Exception e) {
             displayLog("jsonexception error " + e.toString());
         }
@@ -588,7 +696,15 @@ public class OkHeartActivity extends AppCompatActivity {
         try {
 
             if (completedWell) {
-
+                /*
+                final JSONObject jsonObject1 = new JSONObject();
+                jsonObject1.put("message","non_fatal_exit");
+                JSONObject payload1 = new JSONObject();
+                payload1.put("Response","Address creation completed successfully");
+                jsonObject1.put("payload",payload1);
+                displayLog(jsonObject.toString());
+                okHiCallback.querycomplete(jsonObject1);
+                */
             } else {
                 if (isWebInterface) {
 
@@ -634,11 +750,11 @@ public class OkHeartActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             displayLog("shouldOverrideUrlLoading");
-            if (Uri.parse(url).getHost().equals("https://manager-v5.okhi.io")) {
+            if (Uri.parse(url).getHost().equals("https://manager-v4.okhi.co")) {
                 // This is my website, so do not override; let my WebView load the page
 
                 return false;
-            } else return !Uri.parse(url).getHost().equals("https://dev-manager-v5.okhi.io");
+            } else return !Uri.parse(url).getHost().equals("https://manager-v4.okhi.dev");
             // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
             //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             //startActivity(intent);
@@ -655,7 +771,7 @@ public class OkHeartActivity extends AppCompatActivity {
         }
 
         private void displayLog(String log) {
-            Log.i(TAG, log);
+            //Log.i(TAG, log);
         }
     }
 }

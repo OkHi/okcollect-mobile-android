@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -34,6 +35,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+
+import io.okcollect.android.asynctask.AnonymoussigninTask;
+import io.okcollect.android.callback.AuthtokenCallback;
 
 
 public final class OkHi extends ContentProvider {
@@ -58,6 +62,7 @@ public final class OkHi extends ContentProvider {
 
     public OkHi() {
     }
+    //initialize(clientkey, branchid, environment )
 
     public static void initialize(@NonNull final String applicationKey, @NonNull final String branchid, @NonNull final String environment) throws RuntimeException {
 
@@ -66,12 +71,14 @@ public final class OkHi extends ContentProvider {
 
         if (applicationKey != null) {
             if (applicationKey.length() > 0) {
-                if (applicationKey.startsWith("r:")) {
+                //if (applicationKey.startsWith("r:")) {
                     startInitialization(applicationKey, branchid, environment, false);
+                    /*
                 } else {
                     throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
 
                 }
+            */
             } else {
                 throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
             }
@@ -80,6 +87,8 @@ public final class OkHi extends ContentProvider {
         }
 
     }
+
+    //displayclient(firstname, lastname, phonenumber )
 
     public static void displayClient(@NonNull io.okcollect.android.callback.OkHiCallback okHiCallback, @NonNull JSONObject jsonObject) throws RuntimeException {
 
@@ -182,6 +191,7 @@ public final class OkHi extends ContentProvider {
 
         }
         dataProvider.insertStuff("verify", "" + verify);
+        /*
         try {
             if (verify != null) {
                 String tempVerify = "" + verify;
@@ -217,6 +227,7 @@ public final class OkHi extends ContentProvider {
         } finally {
             // writeToFileVerify("false", "one");
         }
+        */
 
         appkey = applicationKey;
         dataProvider.insertStuff("applicationKey", applicationKey);
@@ -264,7 +275,8 @@ public final class OkHi extends ContentProvider {
                                 eventjson.put("event", "SDK Initialization");
 
                                 JSONObject trackjson = new JSONObject();
-
+                                trackjson.put("environment", environment);
+                                /*
                                 if (environment != null) {
                                     if (environment.length() > 0) {
                                         if (environment.equalsIgnoreCase("PROD")) {
@@ -282,7 +294,7 @@ public final class OkHi extends ContentProvider {
                                 } else {
                                     trackjson.put("environment", "PROD");
                                 }
-
+*/
                                 trackjson.put("event", "SDK Initialization");
 
                                 trackjson.put("action", "initialization");
@@ -473,6 +485,8 @@ public final class OkHi extends ContentProvider {
 
                 JSONObject trackjson = new JSONObject();
                 String environment = dataProvider.getPropertyValue("environment");
+                trackjson.put("environment", environment);
+                /*
                 if (environment != null) {
                     if (environment.length() > 0) {
                         if (environment.equalsIgnoreCase("PROD")) {
@@ -490,6 +504,7 @@ public final class OkHi extends ContentProvider {
                 } else {
                     trackjson.put("environment", "PROD");
                 }
+                */
                 /*
                 if(productionVersion){
                     trackjson.put("environment", "PROD");
@@ -573,11 +588,12 @@ public final class OkHi extends ContentProvider {
 */
 
     private static void startActivity(io.okcollect.android.callback.OkHiCallback okHiCallback, JSONObject jsonObject) {
+        displayLog("startActivity");
         callback = okHiCallback;
         firstname = jsonObject.optString("firstName");
         lastname = jsonObject.optString("lastName");
         phonenumber = jsonObject.optString("phone");
-        requestSource = jsonObject.optString("phone");
+        requestSource = jsonObject.optString("requestSource");
 
         try {
             HashMap<String, String> loans = new HashMap<>();
@@ -602,13 +618,60 @@ public final class OkHi extends ContentProvider {
 
 
         try {
-            Intent intent = new Intent(mContext, io.okcollect.android.activity.OkHeartActivity.class);
-            intent.putExtra("firstname", firstname);
-            intent.putExtra("lastname", lastname);
-            intent.putExtra("phone", phonenumber);
-            intent.putExtra("uniqueId", uniqueId);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
+
+            io.okcollect.android.callback.AuthtokenCallback authtokenCallback = new io.okcollect.android.callback.AuthtokenCallback() {
+                @Override
+                public void querycomplete(String response, boolean success) {
+                    if(success){
+                        displayLog("success response "+response);
+                        try{
+                            JSONObject jsonObject = new JSONObject(response);
+                            String token = jsonObject.optString("authorization_token");
+                            displayLog("token "+token);
+                            dataProvider.insertStuff("authtoken",token);
+
+                            Intent intent = new Intent(mContext, io.okcollect.android.activity.OkHeartActivity.class);
+                            intent.putExtra("firstname", firstname);
+                            intent.putExtra("lastname", lastname);
+                            intent.putExtra("phone", phonenumber);
+                            intent.putExtra("uniqueId", uniqueId);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            displayLog("here");
+                            mContext.startActivity(intent);
+
+                            //OkHi.initialize(token, "branchid", "devmaster");
+                            //OkHi.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
+
+                        }
+                        catch (Exception e){
+                            displayLog("error "+e.toString());
+                        }
+                    }
+                    else{
+                        displayLog("failed response "+response);
+                    }
+                }
+            };
+
+            //"i3c5W92cB8"
+            String branchid = dataProvider.getPropertyValue("branchid");
+            String applicationKey = dataProvider.getPropertyValue("applicationKey");
+
+            displayLog("branchid "+branchid+" clientkey "+applicationKey);
+
+            String tologinwith;
+            if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
+                tologinwith = "+2547" + phonenumber.substring(2);
+            } else {
+                tologinwith = phonenumber;
+            }
+
+            io.okcollect.android.asynctask.AnonymoussigninTask anonymoussigninTask =
+                    new io.okcollect.android.asynctask.AnonymoussigninTask(mContext, authtokenCallback,
+                    branchid, applicationKey , "verify",tologinwith);
+            anonymoussigninTask.execute();
+
+
         } catch (Exception e) {
             displayLog("error calling receiveActivity activity " + e.toString());
         }
@@ -821,6 +884,7 @@ public final class OkHi extends ContentProvider {
         return permission;
     }
 
+    /*
     public static void manualPing(@NonNull io.okcollect.android.callback.OkHiCallback okHiCallback, @NonNull JSONObject jsonObject) {
 
         displayLog("display client " + jsonObject.toString());
@@ -964,9 +1028,10 @@ public final class OkHi extends ContentProvider {
             displayLog("jsonexception " + jse.toString());
         }
     }
+    */
 
     private static void displayLog(String log) {
-        //Log.i(TAG, log);
+        Log.i(TAG, log);
     }
 
     private static void writeToFile(String customString) {

@@ -15,6 +15,8 @@ import org.json.JSONObject;
 
 import io.okcollect.android.OkHi;
 import io.okcollect.android.R;
+import io.okcollect.android.asynctask.AnonymoussigninTask;
+import io.okcollect.android.callback.AuthtokenCallback;
 import io.okcollect.android.callback.OkHiCallback;
 
 public class TestActivity extends AppCompatActivity {
@@ -28,12 +30,22 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
+        //OkHi.initialize("r:4e66bc42f0aa3d96fc3dfd5dae088262", "branchid", "sandbox");
+        //OkHi.customize("rgb(255,227,237)", "okhi", "https://cdn.okhi.co/icon.png", "rgb(255,227,237)", true, true);
 
-        OkHi.initialize("r:4e66bc42f0aa3d96fc3dfd5dae088262", "branchid", "sandbox");
-        OkHi.customize("rgb(255,227,237)", "okhi", "https://cdn.okhi.co/icon.png", "rgb(255,227,237)", true, true);
         //OkHi.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
 
-        //
+        //"xuAGglxifQ:ba31a15f-d817-4cd4-bc50-e469de0d396a"
+
+
+
+        //initialize(clientkey, branchid, environment )
+        //displayclient(firstname, lastname, phonenumber )
+
+        OkHi.initialize("ba31a15f-d817-4cd4-bc50-e469de0d396a", "xuAGglxifQ", "devmaster");
+        OkHi.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
+
+
 
         firstnameedt = findViewById(R.id.firstname);
         lastnameedt = findViewById(R.id.lastname);
@@ -84,7 +96,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+/*
                 OkHiCallback okHiCallback = new OkHiCallback() {
                     @Override
                     public void querycomplete(JSONObject result) {
@@ -114,7 +126,7 @@ public class TestActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     displayLog("json exception error " + e.toString());
                 }
-
+*/
 
             }
         });
