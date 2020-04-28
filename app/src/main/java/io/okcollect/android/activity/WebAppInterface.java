@@ -1,10 +1,8 @@
 package io.okcollect.android.activity;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.Settings;
 import android.webkit.JavascriptInterface;
 
@@ -20,8 +18,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import io.okcollect.android.OkCollect;
 
 
 class WebAppInterface {
@@ -238,7 +237,7 @@ class WebAppInterface {
                             displayLog("error attaching afl to ual " + e1.toString());
                         }
                         try {
-                            io.okcollect.android.OkHi.getCallback().querycomplete(jsonObject);
+                            OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
                         }
@@ -315,7 +314,7 @@ class WebAppInterface {
                             displayLog("error attaching afl to ual " + e1.toString());
                         }
                         try {
-                            io.okcollect.android.OkHi.getCallback().querycomplete(jsonObject);
+                            OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
                         }
@@ -375,7 +374,7 @@ class WebAppInterface {
                             displayLog("error attaching afl to ual " + e1.toString());
                         }
                         try {
-                            io.okcollect.android.OkHi.getCallback().querycomplete(jsonObject);
+                            OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
                         }
@@ -407,7 +406,7 @@ class WebAppInterface {
                             displayLog("error attaching afl to ual " + e1.toString());
                         }
                         try {
-                            io.okcollect.android.OkHi.getCallback().querycomplete(jsonObject);
+                            OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
 

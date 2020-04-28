@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import io.okcollect.android.OkCollect;
+import io.okcollect.android.callback.OkCollectCallback;
+
 
 public class OkHeartActivity extends AppCompatActivity {
 
@@ -36,7 +39,7 @@ public class OkHeartActivity extends AppCompatActivity {
     private static Float acc;
     private static String firstname, lastname, phonenumber, apiKey, color, name, logo, appbarcolor;
     private static Boolean appbarvisible, enablestreetview;
-    private static io.okcollect.android.callback.OkHiCallback okHiCallback;
+    private static OkCollectCallback okCollectCallback;
     private static boolean completedWell, isWebInterface;
     private static String uniqueId;
     private static String verify;
@@ -340,8 +343,8 @@ public class OkHeartActivity extends AppCompatActivity {
         });
 
         try {
-            okHiCallback = io.okcollect.android.OkHi.getCallback();
-            if (okHiCallback != null) {
+            okCollectCallback = OkCollect.getCallback();
+            if (okCollectCallback != null) {
                 displayLog("okheartcallback is not null");
             } else {
                 displayLog("okheartcallback is null");
@@ -599,7 +602,7 @@ public class OkHeartActivity extends AppCompatActivity {
                     payload1.put("Error", "Address creation did not complete");
                     jsonObject1.put("payload", payload1);
                     displayLog(jsonObject.toString());
-                    okHiCallback.querycomplete(jsonObject1);
+                    okCollectCallback.querycomplete(jsonObject1);
                 }
 
             }

@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import io.okcollect.android.OkCollect;
+import io.okcollect.android.callback.OkCollectCallback;
+
 
 public class OkHeartActivityCopy extends AppCompatActivity {
 
@@ -35,7 +38,7 @@ public class OkHeartActivityCopy extends AppCompatActivity {
     private static Float acc;
     private static String firstname, lastname, phonenumber, apiKey, color, name, logo, appbarcolor;
     private static Boolean appbarvisible, enablestreetview;
-    private static io.okcollect.android.callback.OkHiCallback okHiCallback;
+    private static OkCollectCallback okCollectCallback;
     private static boolean completedWell, isWebInterface;
     private static String uniqueId;
     private static String verify;
@@ -173,8 +176,8 @@ public class OkHeartActivityCopy extends AppCompatActivity {
         logo = null;
         verify = "false";
 
-        //OkHi.initialize("r:b59a93ba7d80a95d89dff8e4c52e259a", true, false);
-        //OkHi.customize("rgb(0,179,255)", "Mula", "https://cdn.okhi.co/okhi-logo-white.svg");
+        //OkCollect.initialize("r:b59a93ba7d80a95d89dff8e4c52e259a", true, false);
+        //OkCollect.customize("rgb(0,179,255)", "Mula", "https://cdn.okhi.co/okhi-logo-white.svg");
 
         try {
             Bundle bundle = getIntent().getExtras();
@@ -298,7 +301,7 @@ public class OkHeartActivityCopy extends AppCompatActivity {
             jsonObject.put("firstName", firstname);
             jsonObject.put("lastName", lastname);
             jsonObject.put("phone", phonenumber);
-            OkHi.displayClient(okHiCallback, jsonObject);
+            OkCollect.displayClient(okCollectCallback, jsonObject);
         } catch (JSONException e) {
             displayLog("json exception error " + e.toString());
         }
@@ -479,8 +482,8 @@ public class OkHeartActivityCopy extends AppCompatActivity {
         });
 
         try {
-            okHiCallback = io.okcollect.android.OkHi.getCallback();
-            if (okHiCallback != null) {
+            okCollectCallback = OkCollect.getCallback();
+            if (okCollectCallback != null) {
                 displayLog("okheartcallback is not null");
             } else {
                 displayLog("okheartcallback is null");
@@ -703,7 +706,7 @@ public class OkHeartActivityCopy extends AppCompatActivity {
                 payload1.put("Response","Address creation completed successfully");
                 jsonObject1.put("payload",payload1);
                 displayLog(jsonObject.toString());
-                okHiCallback.querycomplete(jsonObject1);
+                okCollectCallback.querycomplete(jsonObject1);
                 */
             } else {
                 if (isWebInterface) {
@@ -715,7 +718,7 @@ public class OkHeartActivityCopy extends AppCompatActivity {
                     payload1.put("Error", "Address creation did not complete");
                     jsonObject1.put("payload", payload1);
                     displayLog(jsonObject.toString());
-                    okHiCallback.querycomplete(jsonObject1);
+                    okCollectCallback.querycomplete(jsonObject1);
                 }
 
             }

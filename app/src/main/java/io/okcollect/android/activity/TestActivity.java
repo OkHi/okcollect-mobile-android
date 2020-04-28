@@ -13,11 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.okcollect.android.OkHi;
+import io.okcollect.android.OkCollect;
 import io.okcollect.android.R;
-import io.okcollect.android.asynctask.AnonymoussigninTask;
-import io.okcollect.android.callback.AuthtokenCallback;
-import io.okcollect.android.callback.OkHiCallback;
+import io.okcollect.android.callback.OkCollectCallback;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -30,10 +28,10 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        //OkHi.initialize("r:4e66bc42f0aa3d96fc3dfd5dae088262", "branchid", "sandbox");
-        //OkHi.customize("rgb(255,227,237)", "okhi", "https://cdn.okhi.co/icon.png", "rgb(255,227,237)", true, true);
+        //OkCollect.initialize("r:4e66bc42f0aa3d96fc3dfd5dae088262", "branchid", "sandbox");
+        //OkCollect.customize("rgb(255,227,237)", "okhi", "https://cdn.okhi.co/icon.png", "rgb(255,227,237)", true, true);
 
-        //OkHi.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
+        //OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
 
         //"xuAGglxifQ:ba31a15f-d817-4cd4-bc50-e469de0d396a"
 
@@ -42,8 +40,8 @@ public class TestActivity extends AppCompatActivity {
         //initialize(clientkey, branchid, environment )
         //displayclient(firstname, lastname, phonenumber )
 
-        OkHi.initialize("ba31a15f-d817-4cd4-bc50-e469de0d396a", "xuAGglxifQ", "devmaster");
-        OkHi.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
+        OkCollect.initialize("ba31a15f-d817-4cd4-bc50-e469de0d396a", "xuAGglxifQ", "devmaster");
+        OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
 
 
 
@@ -52,20 +50,20 @@ public class TestActivity extends AppCompatActivity {
         phoneedt = findViewById(R.id.phone);
         submitbtn = findViewById(R.id.submit);
         pingbtn = findViewById(R.id.ping);
-        //displayLog(""+OkHi.checkPermission());
+        //displayLog(""+OkCollect.checkPermission());
 
         submitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (OkHi.checkPermission()) {
+                if (OkCollect.checkPermission()) {
                     String firstname = firstnameedt.getText().toString();
                     String lastname = lastnameedt.getText().toString();
                     String phone = phoneedt.getText().toString();
 
                     if ((firstname.length() > 0) && (lastname.length() > 0) && (phone.length() > 0)) {
 
-                        OkHiCallback okHiCallback = new OkHiCallback() {
+                        OkCollectCallback okCollectCallback = new OkCollectCallback() {
                             @Override
                             public void querycomplete(JSONObject result) {
                                 displayLog(result.toString());
@@ -77,7 +75,7 @@ public class TestActivity extends AppCompatActivity {
                             jsonObject.put("firstName", firstname);
                             jsonObject.put("lastName", lastname);
                             jsonObject.put("phone", phone);
-                            OkHi.displayClient(okHiCallback, jsonObject);
+                            OkCollect.displayClient(okCollectCallback, jsonObject);
                         } catch (JSONException e) {
                             displayLog("json exception error " + e.toString());
                         }
@@ -86,7 +84,7 @@ public class TestActivity extends AppCompatActivity {
                         Toast.makeText(TestActivity.this, "Error! Missing firstname or lastname or phonenumber", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    OkHi.requestPermission(TestActivity.this, MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+                    OkCollect.requestPermission(TestActivity.this, MY_PERMISSIONS_ACCESS_FINE_LOCATION);
                 }
 
             }
@@ -97,7 +95,7 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 /*
-                OkHiCallback okHiCallback = new OkHiCallback() {
+                OkCollectCallback okHiCallback = new OkCollectCallback() {
                     @Override
                     public void querycomplete(JSONObject result) {
                         displayLog(result.toString());
@@ -122,7 +120,7 @@ public class TestActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("phone", tempPhonenumber);
-                    OkHi.manualPing(okHiCallback, jsonObject);
+                    OkCollect.manualPing(okHiCallback, jsonObject);
                 } catch (JSONException e) {
                     displayLog("json exception error " + e.toString());
                 }
@@ -142,13 +140,13 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(io.okcollect.android.R.layout.activity_test);
 
-        io.okcollect.android.OkHi.initialize("r:b59a93ba7d80a95d89dff8e4c52e259a", true);
+        io.okcollect.android.OkCollect.initialize("r:b59a93ba7d80a95d89dff8e4c52e259a", true);
 
         String firstname = "Ramogi";
         String lastname = "Ochola";
         String phonenumber = "+254713567907";
 
-        io.okcollect.android.callback.OkHiCallback okHiCallback = new io.okcollect.android.callback.OkHiCallback() {
+        io.okcollect.android.callback.OkCollectCallback okHiCallback = new io.okcollect.android.callback.OkCollectCallback() {
             @Override
             public void querycomplete(JSONObject result) {
                 displayLog("result " + result);
@@ -162,7 +160,7 @@ public class TestActivity extends AppCompatActivity {
                     int errorCode = payload.optInt("errorCode", 0);
                     displayLog("" + errorCode);
                     if (errorCode == -1) {
-                        io.okcollect.android.OkHi.requestPermission(TestActivity.this, MY_PERMISSIONS_ACCESS_FINE_LOCATION);
+                        io.okcollect.android.OkCollect.requestPermission(TestActivity.this, MY_PERMISSIONS_ACCESS_FINE_LOCATION);
                     }
 
                 }
@@ -175,7 +173,7 @@ public class TestActivity extends AppCompatActivity {
             jsonObject.put("firstName", firstname);
             jsonObject.put("lastName", lastname);
             jsonObject.put("phone", phonenumber);
-            io.okcollect.android.OkHi.displayClient(okHiCallback, jsonObject);
+            io.okcollect.android.OkCollect.displayClient(okHiCallback, jsonObject);
         } catch (JSONException e) {
             displayLog("json exception error " + e.toString());
         }
