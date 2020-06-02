@@ -27,12 +27,11 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+/*
+        OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
 
-        //OkCollect.initialize("r:4e66bc42f0aa3d96fc3dfd5dae088262", "branchid", "sandbox");
-        //OkCollect.customize("rgb(255,227,237)", "okhi", "https://cdn.okhi.co/icon.png", "rgb(255,227,237)", true, true);
-
-        //OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
-
+        OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
+*/
         //"xuAGglxifQ:ba31a15f-d817-4cd4-bc50-e469de0d396a"
 
 
@@ -40,9 +39,9 @@ public class TestActivity extends AppCompatActivity {
         //initialize(clientkey, branchid, environment )
         //displayclient(firstname, lastname, phonenumber )
 
-        OkCollect.initialize("4d380065-71e5-48b8-8fb3-29fe61299c4b", "yhCvQnGG1z", "devmaster");
+        //OkCollect.initialize("4d380065-71e5-48b8-8fb3-29fe61299c4b", "yhCvQnGG1z", "devmaster");
 
-        OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png", "#ba0c2f", false, true);
+        //OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png", "#ba0c2f", false, true);
 
 
 

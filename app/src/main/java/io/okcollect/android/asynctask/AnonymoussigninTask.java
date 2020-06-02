@@ -25,20 +25,33 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
     private String branchId, clientKey, scope, userid;
     private int responseCode;
     private AuthtokenCallback authtokenCallback;
+    private String environment;
     public AnonymoussigninTask(Context context, AuthtokenCallback authtokenCallback,
-                               String branchId, String clientKey, String scope, String userid) {
+                               String branchId, String clientKey, String scope, String userid, String environment) {
         this.authtokenCallback = authtokenCallback;
         this.branchId = branchId;
         this.clientKey = clientKey;
         this.scope = scope;
         this.userid = userid;
+        this.environment = environment;
     }
     @Override
     protected String doInBackground(Void... params) {
         String result = null;
 
         try {
-            String urlString = "https://dev-api.okhi.io/v5/auth/anonymous-signin";
+            //String urlString = "https://dev-api.okhi.io/v5/auth/anonymous-signin";
+
+            String urlString;
+            if (environment.equalsIgnoreCase("PROD")) {
+                urlString = "https://api.okhi.io/v5/auth/anonymous-signin";
+            } else if (environment.equalsIgnoreCase("DEVMASTER")) {
+                urlString = "https://dev-api.okhi.io/v5/auth/anonymous-signin";
+            } else if (environment.equalsIgnoreCase("SANDBOX")) {
+                urlString = "https://sandbox-api.okhi.io/v5/auth/anonymous-signin";
+            } else {
+                urlString = "https://api.okhi.io/v5/auth/anonymous-signin";
+            }
 
             OkHttpClient.Builder b = new OkHttpClient.Builder();
             b.connectTimeout(5, TimeUnit.SECONDS);

@@ -654,6 +654,7 @@ public final class OkCollect extends ContentProvider {
             //"i3c5W92cB8"
             String branchid = dataProvider.getPropertyValue("branchid");
             String applicationKey = dataProvider.getPropertyValue("applicationKey");
+            String environment = dataProvider.getPropertyValue("environment");
 
             displayLog("branchid "+branchid+" clientkey "+applicationKey);
 
@@ -666,7 +667,7 @@ public final class OkCollect extends ContentProvider {
 
             io.okcollect.android.asynctask.AnonymoussigninTask anonymoussigninTask =
                     new io.okcollect.android.asynctask.AnonymoussigninTask(mContext, authtokenCallback,
-                    branchid, applicationKey , "verify",tologinwith);
+                    branchid, applicationKey , "verify",tologinwith, environment);
             anonymoussigninTask.execute();
 
 
