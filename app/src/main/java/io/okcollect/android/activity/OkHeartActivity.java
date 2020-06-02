@@ -550,14 +550,14 @@ public class OkHeartActivity extends AppCompatActivity {
                     "        context: {\n" +
                     "          container: {\n" +
                     "           \"name\": \"Quickteller App\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
+                    "            \"version\": \"2.0.3\"\n" +
                     "          },\n" +
                     "          developer: {\n" +
                     "            name: 'okhi',\n" +
                     "          },\n" +
                     "          library: {\n" +
-                    "           \"name\": \"okcollect-android-sdk\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
+                    "           \"name\": \"okCollectMobileAndroid\",\n" +
+                    "            \"version\": \"2.0.3\"\n" +
                     "          },\n" +
                     "          platform: {\n" +
                     "            name: 'mobile',\n" +
