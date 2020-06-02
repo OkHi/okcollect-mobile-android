@@ -40,8 +40,9 @@ public class TestActivity extends AppCompatActivity {
         //initialize(clientkey, branchid, environment )
         //displayclient(firstname, lastname, phonenumber )
 
-        OkCollect.initialize("ba31a15f-d817-4cd4-bc50-e469de0d396a", "xuAGglxifQ", "devmaster");
-        OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
+        OkCollect.initialize("4d380065-71e5-48b8-8fb3-29fe61299c4b", "yhCvQnGG1z", "devmaster");
+
+        OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png", "#ba0c2f", false, true);
 
 
 

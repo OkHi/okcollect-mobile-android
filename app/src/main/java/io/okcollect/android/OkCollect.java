@@ -155,7 +155,7 @@ public final class OkCollect extends ContentProvider {
     private static void startInitialization(final String applicationKey, final String branchid, final String environment, final Boolean verify) {
         displayLog("workmanager startInitialization " + verify);
 
-        io.okcollect.android.utilities.ConfigurationFile configurationFile = new io.okcollect.android.utilities.ConfigurationFile(mContext, environment);
+        //io.okcollect.android.utilities.ConfigurationFile configurationFile = new io.okcollect.android.utilities.ConfigurationFile(mContext, environment);
         try {
             HashMap<String, String> loans = new HashMap<>();
             loans.put("uniqueId", uniqueId);
