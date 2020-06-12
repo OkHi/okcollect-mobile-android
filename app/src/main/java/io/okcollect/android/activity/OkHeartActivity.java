@@ -529,6 +529,7 @@ public class OkHeartActivity extends AppCompatActivity {
                     "}";
             */
 
+
             String payload = "{\n" +
                     "      message: 'select_location',\n" +
                     "      payload: {\n" +
@@ -549,15 +550,15 @@ public class OkHeartActivity extends AppCompatActivity {
                     "      },\n" +
                     "        context: {\n" +
                     "          container: {\n" +
-                    "           \"name\": \"Quickteller App\",\n" +
-                    "            \"version\": \"2.0.3\"\n" +
+                    "           \"name\": \"Android App\",\n" +
+                    "            \"version\": \"2.0.4\"\n" +
                     "          },\n" +
                     "          developer: {\n" +
                     "            name: 'okhi',\n" +
                     "          },\n" +
                     "          library: {\n" +
                     "           \"name\": \"okCollectMobileAndroid\",\n" +
-                    "            \"version\": \"2.0.3\"\n" +
+                    "            \"version\": \"2.0.4\"\n" +
                     "          },\n" +
                     "          platform: {\n" +
                     "            name: 'mobile',\n" +

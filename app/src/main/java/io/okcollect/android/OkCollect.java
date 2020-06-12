@@ -585,13 +585,13 @@ public final class OkCollect extends ContentProvider {
     }
 */
 
-    private static void startActivity(OkCollectCallback okCollectCallback, JSONObject jsonObject) {
+    private static void startActivity(final OkCollectCallback okCollectCallback, JSONObject jsonObject) {
         displayLog("startActivity");
         callback = okCollectCallback;
         firstname = jsonObject.optString("firstName");
         lastname = jsonObject.optString("lastName");
         phonenumber = jsonObject.optString("phone");
-        requestSource = jsonObject.optString("requestSource");
+        requestSource = "create";
 
         try {
             HashMap<String, String> loans = new HashMap<>();
@@ -647,6 +647,12 @@ public final class OkCollect extends ContentProvider {
                     }
                     else{
                         displayLog("failed response "+response);
+                        try{
+                           okCollectCallback.querycomplete(new JSONObject(response));
+                        }
+                        catch (Exception e){
+
+                        }
                     }
                 }
             };

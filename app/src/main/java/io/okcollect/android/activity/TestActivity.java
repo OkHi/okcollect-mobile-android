@@ -27,11 +27,18 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-/*
-        OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
 
-        OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
-*/
+        //OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
+        //OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
+
+        //OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
+
+
+
+
+
+
+
         //"xuAGglxifQ:ba31a15f-d817-4cd4-bc50-e469de0d396a"
 
 
@@ -55,7 +62,26 @@ public class TestActivity extends AppCompatActivity {
         submitbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                displayLog("submit clicked");
+                OkCollectCallback okCollectCallback = new OkCollectCallback() {
+                    @Override
+                    public void querycomplete(JSONObject result) {
+                        displayLog(result.toString());
 
+                    }
+                };
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("firstName", "Ramogi");
+                    jsonObject.put("lastName", "Ochola");
+                    jsonObject.put("phone", "+254713567907");
+                    OkCollect.displayClient(okCollectCallback, jsonObject);
+                } catch (JSONException e) {
+                    displayLog("json exception error " + e.toString());
+                }
+
+
+                /*
                 if (OkCollect.checkPermission()) {
                     String firstname = firstnameedt.getText().toString();
                     String lastname = lastnameedt.getText().toString();
@@ -86,6 +112,7 @@ public class TestActivity extends AppCompatActivity {
                 } else {
                     OkCollect.requestPermission(TestActivity.this, MY_PERMISSIONS_ACCESS_FINE_LOCATION);
                 }
+                */
 
             }
         });
