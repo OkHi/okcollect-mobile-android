@@ -37,6 +37,8 @@ import java.util.HashMap;
 
 import io.okcollect.android.callback.OkCollectCallback;
 
+import static io.okcollect.android.utilities.Constants.unauthorized;
+
 
 public final class OkCollect extends ContentProvider {
 
@@ -585,7 +587,7 @@ public final class OkCollect extends ContentProvider {
     }
 */
 
-    private static void startActivity(final OkCollectCallback okCollectCallback, JSONObject jsonObject) {
+    private static void startActivity(@NonNull final OkCollectCallback okCollectCallback, @NonNull final JSONObject jsonObject) {
         displayLog("startActivity");
         callback = okCollectCallback;
         firstname = jsonObject.optString("firstName");
@@ -648,7 +650,10 @@ public final class OkCollect extends ContentProvider {
                     else{
                         displayLog("failed response "+response);
                         try{
-                           okCollectCallback.querycomplete(new JSONObject(response));
+                            JSONObject jsonObject1 = new JSONObject();
+                            jsonObject1.put("code", unauthorized);
+                            jsonObject1.put("message", "The credentials you have provided are invalid");
+                           okCollectCallback.querycomplete(jsonObject1);
                         }
                         catch (Exception e){
 
@@ -1036,7 +1041,7 @@ public final class OkCollect extends ContentProvider {
     */
 
     private static void displayLog(String log) {
-        Log.i(TAG, log);
+        //Log.i(TAG, log);
     }
 
     private static void writeToFile(String customString) {

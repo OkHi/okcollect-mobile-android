@@ -17,6 +17,15 @@ public class Constants {
     public final static boolean DEV4 = false;
     */
 
+    public static final String unauthorized = "unauthorized";
+    public static final String network_error = "network_error";
+    public static final String invalid_configuration = "invalid_configuration";
+    public static final String invalid_phone = "invalid_phone";
+    public static final String unknown_error = "unknown_error";
+    public static final String permission_denied = "permission_denied";
+    public static final String location_services_disabled = "location_services_disabled";
+    public static final String geofence_exception = "geofence_exception";
+
     public static final String PROD_USERID = "A8dGsqkXNb";
     public static final String DEVMASTER_USERID = "A8dGsqkXNb";
     public static final String DEV4_USERID = "A8dGsqkXNb";

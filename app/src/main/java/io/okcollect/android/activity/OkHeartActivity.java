@@ -126,7 +126,7 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private static void displayLog(String log) {
-        Log.i(TAG, log);
+       // Log.i(TAG, log);
     }
 
     private static boolean isCompletedWell() {

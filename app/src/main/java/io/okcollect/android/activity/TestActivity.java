@@ -236,7 +236,7 @@ public class TestActivity extends AppCompatActivity {
 
 
     private void displayLog(String log) {
-        Log.i("TestActivity", log);
+       // Log.i("TestActivity", log);
     }
 
 }

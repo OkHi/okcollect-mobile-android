@@ -102,6 +102,6 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
 
     }
     private void displayLog(String log){
-        Log.i("AnonymoussigninTask", log);
+        //Log.i("AnonymoussigninTask", log);
     }
 }

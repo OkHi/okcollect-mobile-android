@@ -23,6 +23,13 @@ import java.util.concurrent.TimeUnit;
 
 import io.okcollect.android.OkCollect;
 
+import static io.okcollect.android.utilities.Constants.invalid_configuration;
+import static io.okcollect.android.utilities.Constants.invalid_phone;
+import static io.okcollect.android.utilities.Constants.network_error;
+import static io.okcollect.android.utilities.Constants.permission_denied;
+import static io.okcollect.android.utilities.Constants.unauthorized;
+import static io.okcollect.android.utilities.Constants.unknown_error;
+
 
 class WebAppInterface {
     private static final String TAG = "WebAppInterface";
@@ -407,6 +414,56 @@ class WebAppInterface {
                             displayLog("error attaching afl to ual " + e1.toString());
                         }
                         try {
+                            /*
+                            if(results != null){
+                                if(results.length() > 0){
+                                    if(results.contains("network")){
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        jsonObject1.put("code",network_error);
+                                        jsonObject1.put("message", "The application was unable to reach OkHi servers");
+                                        OkCollect.getCallback().querycomplete(jsonObject1);
+                                    }
+                                    else if(results.contains("credentials")){
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        jsonObject1.put("code",unauthorized);
+                                        jsonObject1.put("message", "The credentials you have provided are invalid");
+                                        OkCollect.getCallback().querycomplete(jsonObject1);
+                                    }
+                                    else if(results.contains("auth")){
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        jsonObject1.put("code",unauthorized);
+                                        jsonObject1.put("message", "The credentials you have provided are invalid");
+                                        OkCollect.getCallback().querycomplete(jsonObject1);
+                                    }
+                                    else if(results.contains("permission")){
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        jsonObject1.put("code",permission_denied);
+                                        jsonObject1.put("message", "Location permissions hasn't been granted by the user");
+                                        OkCollect.getCallback().querycomplete(jsonObject1);
+                                    }
+                                    else{
+                                        JSONObject jsonObject1 = new JSONObject();
+                                        jsonObject1.put("code",unknown_error);
+                                        jsonObject1.put("message", "An unknown error occurred");
+                                        OkCollect.getCallback().querycomplete(jsonObject1);
+                                    }
+                                }
+                                else{
+                                    JSONObject jsonObject1 = new JSONObject();
+                                    jsonObject1.put("code",unknown_error);
+                                    jsonObject1.put("message", "An unknown error occurred");
+                                    OkCollect.getCallback().querycomplete(jsonObject1);
+                                }
+                            }
+                            else{
+                                JSONObject jsonObject1 = new JSONObject();
+                                jsonObject1.put("code",unknown_error);
+                                jsonObject1.put("message", "An unknown error occurred");
+
+                            }
+                            */
+                            jsonObject.put("code", unknown_error);
+                            jsonObject.put("message", jsonObject);
                             OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
@@ -1011,7 +1068,7 @@ class WebAppInterface {
     }
 
     private void displayLog(String log) {
-        Log.i(TAG, log);
+        //Log.i(TAG, log);
     }
 }
 
