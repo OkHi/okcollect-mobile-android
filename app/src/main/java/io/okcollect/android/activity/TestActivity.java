@@ -28,7 +28,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        //OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
+        OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
         //OkCollect.initialize("cb613bb2-d132-4e86-a873-1988275ca2d7", "X6VQy8pMxw", "sandbox");
 
         //OkCollect.customize("rgb(0, 1, 13)", "okhi", "https://lh3.ggpht.com/GE2EnJs1M1Al9_Ol2Q1AV0VdSsvjR2dsVWO_2ARuaGVS-CJUhJGbEt_OMHlvR2b8zg=s180", "rgb(255, 0, 0)", true, true);
@@ -236,7 +236,7 @@ public class TestActivity extends AppCompatActivity {
 
 
     private void displayLog(String log) {
-       // Log.i("TestActivity", log);
+       Log.i("TestActivity", log);
     }
 
 }

@@ -650,9 +650,11 @@ public final class OkCollect extends ContentProvider {
                     else{
                         displayLog("failed response "+response);
                         try{
+                            JSONObject jsonObject2 = new JSONObject();
+                            jsonObject2.put("error", "The credentials you have provided are invalid");
                             JSONObject jsonObject1 = new JSONObject();
-                            jsonObject1.put("code", unauthorized);
-                            jsonObject1.put("message", "The credentials you have provided are invalid");
+                            jsonObject1.put("message", "unauthorized");
+                            jsonObject1.put("payload", jsonObject2);
                            okCollectCallback.querycomplete(jsonObject1);
                         }
                         catch (Exception e){
@@ -1041,7 +1043,7 @@ public final class OkCollect extends ContentProvider {
     */
 
     private static void displayLog(String log) {
-        //Log.i(TAG, log);
+        Log.i(TAG, log);
     }
 
     private static void writeToFile(String customString) {

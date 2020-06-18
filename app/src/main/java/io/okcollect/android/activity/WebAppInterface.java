@@ -105,7 +105,7 @@ class WebAppInterface {
                 String backuppayload = jsonObject.optString("payload");
                 if (backuppayload != null) {
                     payload = new JSONObject();
-                    payload.put("Error", backuppayload);
+                    payload.put("error", backuppayload);
                 } else {
 
                 }
@@ -462,8 +462,8 @@ class WebAppInterface {
 
                             }
                             */
-                            jsonObject.put("code", unknown_error);
-                            jsonObject.put("message", jsonObject);
+                            jsonObject.put("payload", payload);
+                            jsonObject.put("message", "fatal_exit");
                             OkCollect.getCallback().querycomplete(jsonObject);
                         } catch (Exception e) {
                             displayLog("error calling back " + e.toString());
