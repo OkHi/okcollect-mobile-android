@@ -389,21 +389,21 @@ public final class OkCollect extends ContentProvider {
 
     }
 
-    public static void customize(@NonNull String appColorTheme, @NonNull String appName, @NonNull String appLogo,
+    public static void customize(@NonNull String appThemeColor, @NonNull String organisationName, @NonNull String appLogo,
                                  @NonNull String appBarColor, @NonNull Boolean appBarVisibility,
                                  @NonNull Boolean enableStreetView) {
 
         try {
             displayLog("okhi customized");
             JSONObject jsonObject = new JSONObject();
-            if (appColorTheme != null) {
-                if (appColorTheme.length() > 0) {
-                    jsonObject.put("color", appColorTheme);
+            if (appThemeColor != null) {
+                if (appThemeColor.length() > 0) {
+                    jsonObject.put("color", appThemeColor);
                 }
             }
-            if (appName != null) {
-                if (appName.length() > 0) {
-                    jsonObject.put("name", appName);
+            if (organisationName != null) {
+                if (organisationName.length() > 0) {
+                    jsonObject.put("name", organisationName);
                 }
             }
 
@@ -426,7 +426,7 @@ public final class OkCollect extends ContentProvider {
             }
             String customString = jsonObject.toString();
             //displayLog("logo "+jsonObject.get("logo"));
-            String testString = "{\"color\":\"" + appBarColor + "\", \"name\": \"" + appName + "\",\"logo\": \"" + appLogo + "\"}";
+            String testString = "{\"color\":\"" + appBarColor + "\", \"name\": \"" + organisationName + "\",\"logo\": \"" + appLogo + "\"}";
             displayLog("custom string " + customString);
             writeToFileCustomize(customString);
             try {
@@ -1043,7 +1043,7 @@ public final class OkCollect extends ContentProvider {
     */
 
     private static void displayLog(String log) {
-        Log.i(TAG, log);
+        //Log.i(TAG, log);
     }
 
     private static void writeToFile(String customString) {
