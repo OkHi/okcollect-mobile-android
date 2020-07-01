@@ -64,15 +64,15 @@ public final class OkCollect extends ContentProvider {
     }
     //initialize(clientkey, branchid, environment )
 
-    public static void initialize(@NonNull final String applicationKey, @NonNull final String branchid, @NonNull final String environment) throws RuntimeException {
+    public static void initialize(@NonNull final String clientKey, @NonNull final String branchId, @NonNull final String environment) throws RuntimeException {
 
         displayLog("initialize");
         //dataProvider.insertStuff("enableverify", ""+verify);
 
-        if (applicationKey != null) {
-            if (applicationKey.length() > 0) {
+        if (clientKey != null) {
+            if (clientKey.length() > 0) {
                 //if (applicationKey.startsWith("r:")) {
-                    startInitialization(applicationKey, branchid, environment, false);
+                    startInitialization(clientKey, branchId, environment, false);
                     /*
                 } else {
                     throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
