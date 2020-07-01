@@ -90,21 +90,21 @@ public final class OkCollect extends ContentProvider {
 
     //displayclient(firstname, lastname, phonenumber )
 
-    public static void displayClient(@NonNull OkCollectCallback okCollectCallback, @NonNull JSONObject jsonObject) throws RuntimeException {
+    public static void displayClient(@NonNull OkCollectCallback okCollectCallback, @NonNull JSONObject userObject) throws RuntimeException {
 
-        displayLog("display client " + jsonObject.toString());
+        displayLog("display client " + userObject.toString());
 
-        if (jsonObject != null) {
-            if (jsonObject.length() > 0) {
+        if (userObject != null) {
+            if (userObject.length() > 0) {
                 if (okCollectCallback != null) {
 
                     if (checkPermission()) {
-                        startActivity(okCollectCallback, jsonObject);
+                        startActivity(okCollectCallback, userObject);
                     } else {
                         String cause = checkPermissionCause();
                         if ((cause.equalsIgnoreCase("Manifest.permission.ACCESS_FINE_LOCATION granted")) ||
                                 (cause.equalsIgnoreCase("Manifest.permission.ACCESS_BACKGROUND_LOCATION granted"))) {
-                            startActivity(okCollectCallback, jsonObject);
+                            startActivity(okCollectCallback, userObject);
                         } else {
                             String verify = "false";
                             File filesDir = new File(mContext.getFilesDir() + "/verify.txt");
@@ -136,7 +136,7 @@ public final class OkCollect extends ContentProvider {
 
                                 }
                             } else {
-                                startActivity(okCollectCallback, jsonObject);
+                                startActivity(okCollectCallback, userObject);
                             }
                         }
                     }
