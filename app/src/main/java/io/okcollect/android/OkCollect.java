@@ -21,8 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
-import com.segment.analytics.Analytics;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,7 +55,6 @@ public final class OkCollect extends ContentProvider {
     private static String appkey;
     private static String uniqueId;
     //private static String remoteSmsTemplate;
-    private static Analytics analytics;
     private static NotificationManager notificationManager;
 
     public OkCollect() {
@@ -191,201 +188,10 @@ public final class OkCollect extends ContentProvider {
 
         }
         dataProvider.insertStuff("verify", "" + verify);
-        /*
-        try {
-            if (verify != null) {
-                String tempVerify = "" + verify;
-                if (tempVerify.length() > 0) {
-                    if ((tempVerify.equalsIgnoreCase("false")) || ((tempVerify.equalsIgnoreCase("true")))) {
-                        writeToFileVerify(tempVerify, "six");
-                        if (verify) {
-                            displayLog("decideWhatToStart");
-                            //decideWhatToStart();
-                        } else {
-                            displayLog("stopPeriodicPing");
-                            //stopPeriodicPing();
-                        }
 
-
-                    } else {
-                        writeToFileVerify("false", "five");
-                        //stopPeriodicPing();
-                    }
-
-                } else {
-                    writeToFileVerify("false", "four");
-                    //stopPeriodicPing();
-                }
-
-            } else {
-                writeToFileVerify("false", "three");
-                //stopPeriodicPing();
-            }
-        } catch (Exception io) {
-            writeToFileVerify("false", "two");
-            //stopPeriodicPing();
-        } finally {
-            // writeToFileVerify("false", "one");
-        }
-        */
 
         appkey = applicationKey;
         dataProvider.insertStuff("applicationKey", applicationKey);
-
-
-        try {
-            /*
-            Boolean production = false;
-            if (applicationKey != null) {
-                if (applicationKey.equalsIgnoreCase("r:b59a93ba7d80a95d89dff8e4c52e259a")) {
-
-                } else {
-                    production = true;
-                }
-            } else {
-                production = true;
-            }
-
-            final Boolean productionVersion = production;
-            */
-
-            JSONObject identifyjson = new JSONObject();
-
-            //identifyjson.put("userId", userId);
-            try {
-                io.okcollect.android.callback.SegmentIdentifyCallBack segmentIdentifyCallBack = new io.okcollect.android.callback.SegmentIdentifyCallBack() {
-                    @Override
-                    public void querycomplete(String response, boolean status) {
-                        if (status) {
-                            displayLog("things went ok with send to omtm identify");
-
-                            try {
-                                io.okcollect.android.callback.SegmentTrackCallBack segmentTrackCallBack = new io.okcollect.android.callback.SegmentTrackCallBack() {
-                                    @Override
-                                    public void querycomplete(String response, boolean status) {
-                                        if (status) {
-                                            displayLog("things went ok with send to omtm track");
-                                        } else {
-                                            displayLog("something went wrong with send to omtm track");
-                                        }
-                                    }
-                                };
-                                JSONObject eventjson = new JSONObject();
-                                //eventjson.put("userId", userId);
-                                eventjson.put("event", "SDK Initialization");
-
-                                JSONObject trackjson = new JSONObject();
-                                trackjson.put("environment", environment);
-                                /*
-                                if (environment != null) {
-                                    if (environment.length() > 0) {
-                                        if (environment.equalsIgnoreCase("PROD")) {
-                                            trackjson.put("environment", "PROD");
-                                        } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                                            trackjson.put("environment", "DEVMASTER");
-                                        } else if (environment.equalsIgnoreCase("SANDBOX")) {
-                                            trackjson.put("environment", "SANDBOX");
-                                        } else {
-                                            trackjson.put("environment", "PROD");
-                                        }
-                                    } else {
-                                        trackjson.put("environment", "PROD");
-                                    }
-                                } else {
-                                    trackjson.put("environment", "PROD");
-                                }
-*/
-                                trackjson.put("event", "SDK Initialization");
-
-                                trackjson.put("action", "initialization");
-                                trackjson.put("actionSubtype", "initialization");
-                                trackjson.put("clientProduct", "okHeartAndroidSDK");
-                                trackjson.put("clientProductVersion", BuildConfig.VERSION_NAME);
-                                trackjson.put("clientKey", applicationKey);
-                                trackjson.put("uniqueId", uniqueId);
-                                //trackjson.put("actionSubtype", "directionsUpdated/okhiGatePhotoUpdated/mapPinUpdated/customNameUpdated/locationInformationUpdated/");
-                                //trackjson.put("crudOp", "create/update");
-                                //trackjson.put("action", "viewUserAddres/updateUserAddress");
-                                //trackjson.put("userId", userId);
-                                //trackjson.put("phone", phoneNumber);
-                                //trackjson.put("addressType", "G");
-                                //trackjson.put("previousAddressType", "T");
-
-                                /*
-                                trackjson.put("hasCustomLink", "");
-                                trackjson.put("hasGatePhoto", false);
-                                trackjson.put("hasGPS", false);
-                                trackjson.put("hasStruturedAddress", true);
-                                trackjson.put("hasDescription",true);
-                                trackjson.put("hasBreadcrumbs", "");
-                                trackjson.put("addressDesignation", addressType);
-                                trackjson.put("streetName", street_name2);
-                                trackjson.put("propertyName",location_name2);
-                                trackjson.put("propertyNumber", location_number2);
-                                trackjson.put("unit", unit2);
-                                trackjson.put("floor", floor2);
-                                trackjson.put("businessName", businessnamestring2);
-                                trackjson.put("neighbourhood", "");
-                                trackjson.put("aflId", "");
-                                trackjson.put("ualId", claimUalId);
-                                trackjson.put("optedIn", "");
-                                trackjson.put("addressSourceAffiliation","");
-                                trackjson.put("addressSourceBrand", "");
-                                trackjson.put("addressSourceBranch", "");
-                                trackjson.put("activeAffiliation", loginaffiliation);
-                                trackjson.put("activeBrand", branch);
-                                trackjson.put("activeBranch", branch);
-                                trackjson.put("photoSource", "");
-                                trackjson.put("cookieToken", OkDriverApplication.getDeviceid());
-                                trackjson.put("daysSinceActivation", "");
-                                trackjson.put("daysSinceActivationPlus", "");
-                                trackjson.put("gpsAccuracy", "");
-                                trackjson.put("isHistoryAddress", "");
-                                trackjson.put("customLink", "");
-                                trackjson.put("amount", "");
-                                trackjson.put("otherId", "");
-                                trackjson.put("paymentMethod", "");
-                                trackjson.put("type", "usage");
-                                trackjson.put("isNewUser", "");
-                                trackjson.put("isOkAppUser", "");
-                                trackjson.put("isOptedIn", "");
-                                trackjson.put("okAppActiveUser", "");
-                                */
-                                trackjson.put("appLayer", "client");
-                                trackjson.put("onObject", "sdk");
-                                trackjson.put("product", "okHeartAndroidSDK");
-
-
-                                eventjson.put("properties", trackjson);
-                                io.okcollect.android.asynctask.SegmentTrackTask segmentTrackTask = new io.okcollect.android.asynctask.SegmentTrackTask(segmentTrackCallBack, eventjson, environment);
-                                segmentTrackTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            } catch (JSONException e) {
-                                displayLog("track error omtm error " + e.toString());
-                            }
-                        } else {
-                            displayLog("something went wrong with send to omtm identify");
-                        }
-
-                    }
-                };
-                io.okcollect.android.asynctask.SegmentIdentifyTask segmentIdentifyTask = new io.okcollect.android.asynctask.SegmentIdentifyTask(segmentIdentifyCallBack, identifyjson, environment);
-                segmentIdentifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-            } catch (Exception e) {
-                displayLog("Error initializing analytics_omtm " + e.toString());
-            }
-        } catch (Exception jse) {
-            displayLog("jsonexception jse " + jse.toString());
-        }
-
-        //notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        //startForegroundNotification();
-
-        try {
-            //restrictBackgroundData(false, THREAD_WAIT_TIMEOUT_IN_MS);
-        } catch (Exception jse) {
-            displayLog("jsonexception jse " + jse.toString());
-        }
 
     }
 
@@ -449,99 +255,6 @@ public final class OkCollect extends ContentProvider {
         } finally {
 
         }
-
-
-        try {
-            /*
-            Boolean production = false;
-            if (appkey != null) {
-                if (appkey.equalsIgnoreCase("r:b59a93ba7d80a95d89dff8e4c52e259a")) {
-
-                } else {
-                    production = true;
-                }
-            } else {
-                production = true;
-            }
-
-            final Boolean productionVersion = production;
-            displayLog("things went ok with send to omtm identify");
-
-            */
-            try {
-                io.okcollect.android.callback.SegmentTrackCallBack segmentTrackCallBack = new io.okcollect.android.callback.SegmentTrackCallBack() {
-                    @Override
-                    public void querycomplete(String response, boolean status) {
-                        if (status) {
-                            displayLog("things went ok with send to omtm track");
-                        } else {
-                            displayLog("something went wrong with send to omtm track");
-                        }
-                    }
-                };
-                JSONObject eventjson = new JSONObject();
-                //eventjson.put("userId", userId);
-                eventjson.put("event", "SDK Initialization");
-
-                JSONObject trackjson = new JSONObject();
-                String environment = dataProvider.getPropertyValue("environment");
-                trackjson.put("environment", environment);
-                /*
-                if (environment != null) {
-                    if (environment.length() > 0) {
-                        if (environment.equalsIgnoreCase("PROD")) {
-                            trackjson.put("environment", "PROD");
-                        } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                            trackjson.put("environment", "DEVMASTER");
-                        } else if (environment.equalsIgnoreCase("SANDBOX")) {
-                            trackjson.put("environment", "SANDBOX");
-                        } else {
-                            trackjson.put("environment", "PROD");
-                        }
-                    } else {
-                        trackjson.put("environment", "PROD");
-                    }
-                } else {
-                    trackjson.put("environment", "PROD");
-                }
-                */
-                /*
-                if(productionVersion){
-                    trackjson.put("environment", "PROD");
-                }
-                else if(DEVMASTER){
-                    trackjson.put("environment", "DEVMASTER");
-                }else if(SANDBOX){
-                    trackjson.put("environment", "SANDBOX");
-                }
-                else{
-                    trackjson.put("environment", "PROD");
-                }
-                */
-                trackjson.put("event", "SDK Customize");
-
-                trackjson.put("action", "customization");
-                trackjson.put("actionSubtype", "customization");
-                trackjson.put("clientProduct", "okHeartAndroidSDK");
-                trackjson.put("clientProductVersion", BuildConfig.VERSION_NAME);
-                trackjson.put("clientKey", appkey);
-                trackjson.put("appLayer", "client");
-                trackjson.put("onObject", "sdk");
-                trackjson.put("product", "okHeartAndroidSDK");
-                trackjson.put("uniqueId", uniqueId);
-
-
-                eventjson.put("properties", trackjson);
-                io.okcollect.android.asynctask.SegmentTrackTask segmentTrackTask = new io.okcollect.android.asynctask.SegmentTrackTask(segmentTrackCallBack, eventjson, environment);
-                segmentTrackTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } catch (JSONException e) {
-                displayLog("track error omtm error " + e.toString());
-            }
-        } catch (Exception jse) {
-            displayLog("jsonexception jse " + jse.toString());
-        }
-
-
     }
 
     /*
@@ -720,17 +433,7 @@ public final class OkCollect extends ContentProvider {
                         == PackageManager.PERMISSION_GRANTED;
 
         if (permissionAccessFineLocationApproved) {
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationApproved",
-                        "permission", "mainActivityView", null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 boolean backgroundLocationPermissionApproved =
                         ActivityCompat.checkSelfPermission(mContext,
@@ -741,17 +444,7 @@ public final class OkCollect extends ContentProvider {
                     // App can access location both in the foreground and in the background.
                     // Start your service that doesn't have a foreground service type
                     // defined.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", " Manifest.permission.ACCESS_BACKGROUND_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionApproved",
-                                "permission", "mainActivityView", null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     permission = "Manifest.permission.ACCESS_BACKGROUND_LOCATION granted";
 
                 } else {
@@ -759,17 +452,7 @@ public final class OkCollect extends ContentProvider {
                     // warning the user that your app must have all-the-time access to
                     // location in order to function properly. Then, request background
                     // location.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", " Manifest.permission.ACCESS_BACKGROUND_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionNotApproved",
-                                "permission", "mainActivityView", null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     permission = "Manifest.permission.ACCESS_BACKGROUND_LOCATION not granted";
                 }
             } else {
@@ -778,17 +461,7 @@ public final class OkCollect extends ContentProvider {
         } else {
             // App doesn't have access to the device's location at all. Make full request
             // for permission.
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationNotApproved",
-                        "permission", "mainActivityView", null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             permission = "Manifest.permission.ACCESS_FINE_LOCATION not granted";
         }
         return permission;
@@ -822,17 +495,7 @@ public final class OkCollect extends ContentProvider {
                         == PackageManager.PERMISSION_GRANTED;
 
         if (permissionAccessFineLocationApproved) {
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationApproved",
-                        "permission", "mainActivityView", null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 boolean backgroundLocationPermissionApproved =
                         ActivityCompat.checkSelfPermission(mContext,
@@ -843,17 +506,7 @@ public final class OkCollect extends ContentProvider {
                     // App can access location both in the foreground and in the background.
                     // Start your service that doesn't have a foreground service type
                     // defined.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionApproved",
-                                "permission", "mainActivityView", null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     permission = true;
 
                 } else {
@@ -861,17 +514,7 @@ public final class OkCollect extends ContentProvider {
                     // warning the user that your app must have all-the-time access to
                     // location in order to function properly. Then, request background
                     // location.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionNotApproved",
-                                "permission", "mainActivityView", null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     permission = false;
                 }
             } else {
@@ -880,17 +523,7 @@ public final class OkCollect extends ContentProvider {
         } else {
             // App doesn't have access to the device's location at all. Make full request
             // for permission.
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationNotApproved",
-                        "permission", "mainActivityView", null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             permission = false;
         }
         return permission;
@@ -1187,17 +820,7 @@ public final class OkCollect extends ContentProvider {
                         == PackageManager.PERMISSION_GRANTED;
 
         if (permissionAccessFineLocationApproved) {
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationApproved",
-                        "requestPermission", activity.getLocalClassName(), null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 boolean backgroundLocationPermissionApproved =
                         ActivityCompat.checkSelfPermission(mContext,
@@ -1208,17 +831,7 @@ public final class OkCollect extends ContentProvider {
                     // App can access location both in the foreground and in the background.
                     // Start your service that doesn't have a foreground service type
                     // defined.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionApproved",
-                                "requestPermission", activity.getLocalClassName(), null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     //Constants.scheduleJob(MainActivity.this);
                     //checkLocationSettings();
                 } else {
@@ -1226,17 +839,7 @@ public final class OkCollect extends ContentProvider {
                     // warning the user that your app must have all-the-time access to
                     // location in order to function properly. Then, request background
                     // location.
-                    try {
-                        io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                        okAnalytics.initializeDynamicParameters("app", "backgroundLocationPermissionNotApproved",
-                                "permission", "mainActivityView", null, loans);
-                        okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-                    } catch (Exception e) {
-                        displayLog("event.submit okanalytics error " + e.toString());
-                    }
+
                     ActivityCompat.requestPermissions(activity, new String[]{
                                     Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                             MY_PERMISSIONS_ACCESS_FINE_LOCATION);
@@ -1248,17 +851,7 @@ public final class OkCollect extends ContentProvider {
         } else {
             // App doesn't have access to the device's location at all. Make full request
             // for permission.
-            try {
-                io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                loans.put("type", "Manifest.permission.ACCESS_FINE_LOCATION");
-                okAnalytics.initializeDynamicParameters("app", "permissionAccessFineLocationNotApproved",
-                        "requestPermission", activity.getLocalClassName(), null, loans);
-                okAnalytics.sendToAnalytics("app_interswitch", null, null, "interswitch", environment);
-            } catch (Exception e) {
-                displayLog("event.submit okanalytics error " + e.toString());
-            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 ActivityCompat.requestPermissions(activity, new String[]{
                                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -1275,111 +868,7 @@ public final class OkCollect extends ContentProvider {
     }
 
     private static void sendEvent(HashMap<String, String> parameters, HashMap<String, String> loans) {
-        try {
-            String environment = dataProvider.getPropertyValue("environment");
 
-            if (environment != null) {
-                if (environment.length() > 0) {
-                    if (environment.equalsIgnoreCase("PROD")) {
-
-                    } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-
-                    } else if (environment.equalsIgnoreCase("SANDBOX")) {
-
-                    } else {
-
-                    }
-                } else {
-                    environment = "PROD";
-                }
-            } else {
-                environment = "PROD";
-            }
-
-            io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-            okAnalytics.sendToAnalytics(parameters, loans, environment);
-        } catch (Exception e) {
-            displayLog("error sending photoexpanded analytics event " + e.toString());
-        }
-    }
-    /*
-
-    private static void decideWhatToStart() {
-        List<io.okcollect.android.datamodel.AddressItem> addressItemList = dataProvider.getAllAddressList();
-        displayLog("addressItemList " + addressItemList.size());
-        if (addressItemList.size() > 0) {
-
-            String tempKill = dataProvider.getPropertyValue("kill_switch");
-            if (tempKill != null) {
-                if (tempKill.length() > 0) {
-                    if (tempKill.equalsIgnoreCase("true")) {
-                        String tempResume_ping_frequency = dataProvider.getPropertyValue("resume_ping_frequency");
-                        if (tempResume_ping_frequency != null) {
-                            if (tempResume_ping_frequency.length() > 0) {
-                                Integer pingTime = Integer.parseInt(tempResume_ping_frequency);
-                                startReplacePeriodicPing(pingTime, uniqueId);
-                            } else {
-                                startReplacePeriodicPing(360000000, uniqueId);
-                            }
-                        } else {
-                            startReplacePeriodicPing(360000000, uniqueId);
-                        }
-                    } else {
-                        String tempPing_frequency = dataProvider.getPropertyValue("ping_frequency");
-                        if (tempPing_frequency != null) {
-                            if (tempPing_frequency.length() > 0) {
-                                Integer pingTime = Integer.parseInt(tempPing_frequency);
-                                startKeepPeriodicPing(pingTime, uniqueId);
-                            } else {
-                                startKeepPeriodicPing(3600000, uniqueId);
-                            }
-                        } else {
-                            startKeepPeriodicPing(3600000, uniqueId);
-                        }
-                    }
-                } else {
-                    String tempPing_frequency = dataProvider.getPropertyValue("ping_frequency");
-                    if (tempPing_frequency != null) {
-                        if (tempPing_frequency.length() > 0) {
-                            Integer pingTime = Integer.parseInt(tempPing_frequency);
-                            startKeepPeriodicPing(pingTime, uniqueId);
-                        } else {
-                            startKeepPeriodicPing(3600000, uniqueId);
-                        }
-                    } else {
-                        startKeepPeriodicPing(3600000, uniqueId);
-                    }
-                }
-            } else {
-                String tempPing_frequency = dataProvider.getPropertyValue("ping_frequency");
-                if (tempPing_frequency != null) {
-                    if (tempPing_frequency.length() > 0) {
-                        Integer pingTime = Integer.parseInt(tempPing_frequency);
-                        startKeepPeriodicPing(pingTime, uniqueId);
-                    } else {
-                        startKeepPeriodicPing(3600000, uniqueId);
-                    }
-                } else {
-                    startKeepPeriodicPing(3600000, uniqueId);
-                }
-            }
-        } else {
-            stopPeriodicPing();
-        }
-    }
-    */
-
-    private static void displayToast(String msg, boolean show) {
-        if (show) {
-            try {
-                Toast toast = Toast.makeText(mContext,
-                        msg, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-            } catch (Exception e) {
-                displayLog("Enable data toast error " + e.toString());
-            }
-        }
     }
 
     private static String convertStreamToString(InputStream is) throws IOException {
@@ -1463,7 +952,7 @@ public final class OkCollect extends ContentProvider {
                     .build();
 
             PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker.class, pingTime, TimeUnit.MILLISECONDS)
+                    new PeriodicWorkRequest.Builder(MyWorker2.class, pingTime, TimeUnit.MILLISECONDS)
                             .setInputData(inputData)
                             .setConstraints(constraints)
                             .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
@@ -1502,7 +991,7 @@ public final class OkCollect extends ContentProvider {
                     .build();
 
             PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker.class, pingTime, TimeUnit.MILLISECONDS)
+                    new PeriodicWorkRequest.Builder(MyWorker2.class, pingTime, TimeUnit.MILLISECONDS)
                             .setInputData(inputData)
                             .setConstraints(constraints)
                             .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
@@ -1973,14 +1462,6 @@ public final class OkCollect extends ContentProvider {
         // get the context (Application context)
         mContext = getContext();
         dataProvider = new io.okcollect.android.database.DataProvider(mContext);
-
-        try {
-            analytics = new Analytics.Builder(mContext, io.okcollect.android.utilities.Constants.ANALYTICS_WRITE_KEY).build();
-            Analytics.setSingletonInstance(analytics);
-        } catch (Exception e) {
-            displayLog("Error initializing analytics " + e.toString());
-        }
-
         uniqueId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
@@ -2016,7 +1497,7 @@ public final class OkCollect extends ContentProvider {
                     .build();
 
             PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker.class, 1800000, TimeUnit.MILLISECONDS)
+                    new PeriodicWorkRequest.Builder(MyWorker2.class, 1800000, TimeUnit.MILLISECONDS)
                             .setInputData(inputData)
                             .setConstraints(constraints)
                             .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
@@ -2034,7 +1515,7 @@ public final class OkCollect extends ContentProvider {
                     .build();
 
             PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker.class, 900, TimeUnit.SECONDS)
+                    new PeriodicWorkRequest.Builder(MyWorker2.class, 900, TimeUnit.SECONDS)
                             .setInputData(inputData)
                             .setConstraints(constraints)
                             .setBackoffCriteria(BackoffPolicy.LINEAR, 900, TimeUnit.SECONDS)

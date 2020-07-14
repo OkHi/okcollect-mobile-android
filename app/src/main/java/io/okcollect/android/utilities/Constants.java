@@ -7,16 +7,6 @@ import java.util.TimeZone;
 
 public class Constants {
 
-    /*
-    public final static boolean productionVersion = false;
-    public final static boolean STAGING = false;
-    public final static boolean DEVMASTER = false;
-    public final static boolean SANDBOX = true;
-    public final static boolean DEV1 = false;
-    public final static boolean DEV3 = false;
-    public final static boolean DEV4 = false;
-    */
-
     public static final String unauthorized = "unauthorized";
     public static final String network_error = "network_error";
     public static final String invalid_configuration = "invalid_configuration";

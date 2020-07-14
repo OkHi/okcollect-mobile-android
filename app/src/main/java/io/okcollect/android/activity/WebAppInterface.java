@@ -2,18 +2,9 @@ package io.okcollect.android.activity;
 
 import android.content.ContentValues;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.provider.Settings;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import androidx.work.BackoffPolicy;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,13 +13,6 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import io.okcollect.android.OkCollect;
-
-import static io.okcollect.android.utilities.Constants.invalid_configuration;
-import static io.okcollect.android.utilities.Constants.invalid_phone;
-import static io.okcollect.android.utilities.Constants.network_error;
-import static io.okcollect.android.utilities.Constants.permission_denied;
-import static io.okcollect.android.utilities.Constants.unauthorized;
-import static io.okcollect.android.utilities.Constants.unknown_error;
 
 
 class WebAppInterface {
@@ -54,21 +38,7 @@ class WebAppInterface {
     }
 
     private void stopPeriodicPing() {
-        try {
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("uniqueId", uniqueId);
-            loans.put("phonenumber", phonenumber);
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("eventName", "Data Collection Service");
-            parameters.put("subtype", "startReplacePeriodicPing");
-            parameters.put("type", "doWork");
-            parameters.put("onObject", "webAppInterface");
-            parameters.put("view", "webAppInterface");
-            sendEvent(parameters, loans);
-        } catch (Exception e1) {
-            displayLog("error attaching afl to ual " + e1.toString());
-        }
-        WorkManager.getInstance().cancelUniqueWork("ramogi");
+
     }
 
     /**
@@ -671,112 +641,7 @@ class WebAppInterface {
     }
 
     private void sendEvent(final String appkey, final String action) {
-        try {
-            /*
-            Boolean production = false;
-            if (appkey != null) {
-                if (appkey.equalsIgnoreCase("r:b59a93ba7d80a95d89dff8e4c52e259a")) {
 
-                } else {
-                    production = true;
-                }
-            } else {
-                production = true;
-            }
-
-            final Boolean productionVersion = production;
-            */
-
-            /*
-            JSONObject identifyjson = new JSONObject();
-            identifyjson.put("userId", "8VXRqG8YhN");
-            try {
-                SegmentIdentifyCallBack segmentIdentifyCallBack = new SegmentIdentifyCallBack() {
-                    @Override
-                    public void querycomplete(String response, boolean status) {
-                        if(status){
-                            */
-
-            displayLog("things went ok with send to omtm identify");
-
-            try {
-                io.okcollect.android.callback.SegmentTrackCallBack segmentTrackCallBack = new io.okcollect.android.callback.SegmentTrackCallBack() {
-                    @Override
-                    public void querycomplete(String response, boolean status) {
-                        if (status) {
-                            displayLog("things went ok with send to omtm track " + response);
-                        } else {
-                            displayLog("something went wrong with send to omtm track " + response);
-                        }
-                    }
-                };
-                JSONObject eventjson = new JSONObject();
-                eventjson.put("userId", "8VXRqG8YhN");
-                eventjson.put("event", "SDK Events");
-
-                JSONObject trackjson = new JSONObject();
-
-                if (environment != null) {
-                    if (environment.length() > 0) {
-                        if (environment.equalsIgnoreCase("PROD")) {
-                            trackjson.put("environment", "PROD");
-                        } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                            trackjson.put("environment", "DEVMASTER");
-                        } else if (environment.equalsIgnoreCase("SANDBOX")) {
-                            trackjson.put("environment", "SANDBOX");
-                        } else {
-                            trackjson.put("environment", "PROD");
-                        }
-                    } else {
-                        trackjson.put("environment", "PROD");
-                    }
-                } else {
-                    trackjson.put("environment", "PROD");
-                }
-                trackjson.put("event", "SDK Events");
-
-                trackjson.put("action", action);
-                trackjson.put("actionSubtype", action);
-                trackjson.put("clientProduct", "okHeartAndroidSDK");
-                trackjson.put("clientProductVersion", io.okcollect.android.BuildConfig.VERSION_NAME);
-                trackjson.put("clientKey", appkey);
-                trackjson.put("appLayer", "client");
-                trackjson.put("onObject", "sdk");
-                trackjson.put("product", "okHeartAndroidSDK");
-                trackjson.put("type", action);
-                trackjson.put("subtype", action);
-
-                try {
-                    trackjson.put("timestamp", io.okcollect.android.utilities.Constants.getUTCtimestamp());
-                } catch (Exception e) {
-                    displayLog(" Constants.getUTCtimestamp() error " + e.toString());
-                }
-
-
-                eventjson.put("properties", trackjson);
-                io.okcollect.android.asynctask.SegmentTrackTask segmentTrackTask = new io.okcollect.android.asynctask.SegmentTrackTask(segmentTrackCallBack, eventjson, environment);
-                segmentTrackTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            } catch (JSONException e) {
-                displayLog("track error omtm error " + e.toString());
-            }
-                            /*
-                        }
-                        else{
-                            displayLog("something went wrong with send to omtm identify");
-                        }
-
-                    }
-                };
-                SegmentIdentifyTask segmentIdentifyTask = new SegmentIdentifyTask(segmentIdentifyCallBack, identifyjson, productionVersion);
-                segmentIdentifyTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-            } catch (Exception e) {
-                displayLog("Error initializing analytics_omtm " + e.toString());
-            }
-            */
-        } catch (Exception jse) {
-            displayLog("jsonexception jse " + jse.toString());
-        }
 
     }
 
@@ -988,27 +853,7 @@ class WebAppInterface {
             displayLog("error attaching afl to ual " + e1.toString());
         }
 
-        try {
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
 
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(io.okcollect.android.utilities.MyWorker.class, pingTime, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.KEEP, request);
-
-        } catch (Exception e) {
-            displayLog("my worker error " + e.toString());
-        }
     }
 
     private void startReplacePeriodicPing(Integer pingTime, String uniqueId) {
@@ -1027,44 +872,11 @@ class WebAppInterface {
         } catch (Exception e1) {
             displayLog("error attaching afl to ual " + e1.toString());
         }
-        try {
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
 
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(io.okcollect.android.utilities.MyWorker.class, pingTime, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.REPLACE, request);
-
-
-        } catch (Exception e) {
-            displayLog("my worker error " + e.toString());
-        }
     }
 
     private void sendEvent(HashMap<String, String> parameters, HashMap<String, String> loans) {
-        try {
-            try {
-                loans.put("phonenumber", phonenumber);
-                loans.put("uniqueId", uniqueId);
 
-            } catch (Exception e) {
-                displayLog("error adding phonenumber and uniqueId " + e.toString());
-            }
-            io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(mContext, environment);
-            okAnalytics.sendToAnalytics(parameters, loans, environment);
-        } catch (Exception e) {
-            displayLog("error sending photoexpanded analytics event " + e.toString());
-        }
     }
 
     private void displayLog(String log) {

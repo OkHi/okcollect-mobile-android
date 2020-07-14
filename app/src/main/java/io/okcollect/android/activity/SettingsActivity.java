@@ -158,8 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void sendEvent(HashMap<String, String> parameters, HashMap<String, String> loans) {
         try {
-            io.okcollect.android.utilities.OkAnalytics okAnalytics = new io.okcollect.android.utilities.OkAnalytics(this, environment);
-            okAnalytics.sendToAnalytics(parameters, loans, environment);
+
         } catch (Exception e) {
             displayLog("error sending photoexpanded analytics event " + e.toString());
         }

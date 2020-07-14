@@ -10,9 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!--
-    <uses-permission android:name="android.permission.MANAGE_NETWORK_POLICY" tools:ignore="ProtectedPermissions"/>
-    -->
+
 
 
     <application
@@ -46,23 +44,7 @@
             android:enabled="true"
             android:exported="true" />
 
-<!--
-        <service
-            android:name="io.okcollect.android.services.LocationService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location" />
 
-        <receiver
-            android:name="io.okcollect.android.receivers.GeofenceBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
-
-        <service
-            android:name="io.okcollect.android.services.GeofenceTransitionsJobIntentService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        -->
     </application>
 
 </manifest>
