@@ -58,17 +58,17 @@ This notification will show until verification is complete or you can hide it in
             android:textSize="20sp" />
 
         <Button
-            android:background="@drawable/buttonroundmaterial"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
             android:id="@+id/settingsbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/info3"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/buttonroundmaterial"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:text="Settings"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:text="Settings" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/closebtn"

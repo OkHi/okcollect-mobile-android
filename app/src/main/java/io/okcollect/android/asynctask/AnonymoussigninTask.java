@@ -3,14 +3,9 @@ package io.okcollect.android.asynctask;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.okcollect.android.callback.AuthtokenCallback;
@@ -26,6 +21,7 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
     private int responseCode;
     private AuthtokenCallback authtokenCallback;
     private String environment;
+
     public AnonymoussigninTask(Context context, AuthtokenCallback authtokenCallback,
                                String branchId, String clientKey, String scope, String userid, String environment) {
         this.authtokenCallback = authtokenCallback;
@@ -35,6 +31,7 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
         this.userid = userid;
         this.environment = environment;
     }
+
     @Override
     protected String doInBackground(Void... params) {
         String result = null;
@@ -59,7 +56,7 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
             b.writeTimeout(5, TimeUnit.SECONDS);
 
             OkHttpClient client = b.build();
-            String branchclient = branchId+":"+clientKey;
+            String branchclient = branchId + ":" + clientKey;
 
             final String basicAuth = "Basic " + Base64.encodeToString(branchclient.getBytes(), Base64.NO_WRAP);
 
@@ -89,19 +86,21 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
 
         return result;
     }
+
     @Override
     protected void onPostExecute(String result) {
-        displayLog("responsecode "+responseCode);
-        displayLog("result "+result);
+        displayLog("responsecode " + responseCode);
+        displayLog("result " + result);
         if ((200 <= responseCode) && (responseCode < 300)) {
-            authtokenCallback.querycomplete(result,true);
+            authtokenCallback.querycomplete(result, true);
         } else {
-            authtokenCallback.querycomplete(result,false);
+            authtokenCallback.querycomplete(result, false);
         }
 
 
     }
-    private void displayLog(String log){
-        //Log.i("AnonymoussigninTask", log);
+
+    private void displayLog(String log) {
+        ////Log.i("AnonymoussigninTask", log);
     }
 }

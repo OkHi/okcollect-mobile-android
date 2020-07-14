@@ -5,31 +5,12 @@ package io.okcollect.android.datamodel;
  */
 public class AddressItem {
 
-    /*
-    private int background = 0;
-    private int checked = 0;
-    private int carupgradedelivered = 0;
-    private byte[] picture;
-    */
     private int isOddress;
 
-    //private Long databaseid;
-    //private int unique;
     private String customername;
-    //private String cashier;
     private String phonecustomer;
-    //private String phonedriver;
-    //private String orderid;
-    //private String deliveryid;
-    //private String checknumber;
-    //private String state;
-    //private Long statetime;
     private String affiliation;
-    //private String driverid;
-    //private String drivername;
-    //private String paymenttype;
     private String branch;
-    //private String amount;
     private String ualid;
     private String aflid;
     private String imageurl;
@@ -42,25 +23,6 @@ public class AddressItem {
     private double lat;
     private double lng;
     private String route;
-    //private String checkoutid;
-    //private byte[] blob;
-    //private String url;
-    //private int manualinput;
-    //private String orderstate;
-    //private Long diff;
-    //private String currency;
-    //private String currencycode;
-    //private String riderobjectid;
-    /*
-    private String ticks;
-    private String riderHome;
-    private String taskId;
-    private String tripId;
-    private String customerId;
-    private String destinationId;
-    private String trackingUrl;
-    private String bitlyLink;
-    */
     private String locationNickname;
     private String traditionalBuildingName;
     private String businessName;
@@ -70,12 +32,6 @@ public class AddressItem {
     private String traditionalBuildingNumber;
     private String streetNumber;
     private String streetName;
-    //private Long createdattime;
-    //private Long riderassigntime;
-    //private Long outfordeliverytime;
-    //private Long completeddeliverytime;
-
-
     private String sourceAffiliation;
     private String sourceBranch;
     private String sourceBrand;
@@ -95,22 +51,6 @@ public class AddressItem {
 
     public AddressItem() {
 
-    }
-
-    public String getBranch() {
-        return branch;
-    }
-
-    public void setBranch(String branch) {
-        this.branch = branch;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
     }
 
     public int getIsOddress() {
@@ -145,6 +85,14 @@ public class AddressItem {
         this.affiliation = affiliation;
     }
 
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
     public String getUalid() {
         return ualid;
     }
@@ -167,6 +115,14 @@ public class AddressItem {
 
     public void setImageurl(String imageurl) {
         this.imageurl = imageurl;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getDirection() {

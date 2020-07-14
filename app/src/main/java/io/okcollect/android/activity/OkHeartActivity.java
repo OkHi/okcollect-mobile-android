@@ -3,7 +3,6 @@ package io.okcollect.android.activity;
 import android.Manifest;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,7 +15,6 @@ import android.webkit.WebViewClient;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -77,56 +75,8 @@ public class OkHeartActivity extends AppCompatActivity {
         return ret;
     }
 
-    private static String getFirstname() {
-        return firstname;
-    }
-
-    private static void setFirstname(String firstname) {
-        OkHeartActivity.firstname = firstname;
-    }
-
-    private static String getLastname() {
-        return lastname;
-    }
-
-    private static void setLastname(String lastname) {
-        OkHeartActivity.lastname = lastname;
-    }
-
-    private static String getPhonenumber() {
-        return phonenumber;
-    }
-
-    private static void setPhonenumber(String phonenumber) {
-        OkHeartActivity.phonenumber = phonenumber;
-    }
-
-    private static Double getLat() {
-        return lat;
-    }
-
-    private static void setLat(Double lat) {
-        OkHeartActivity.lat = lat;
-    }
-
-    private static Double getLng() {
-        return lng;
-    }
-
-    private static void setLng(Double lng) {
-        OkHeartActivity.lng = lng;
-    }
-
-    private static Float getAcc() {
-        return acc;
-    }
-
-    private static void setAcc(Float acc) {
-        OkHeartActivity.acc = acc;
-    }
-
     private static void displayLog(String log) {
-       // Log.i(TAG, log);
+        // //Log.i(TAG, log);
     }
 
     private static boolean isCompletedWell() {
@@ -154,18 +104,6 @@ public class OkHeartActivity extends AppCompatActivity {
         environment = dataProvider.getPropertyValue("environment");
         apiKey = dataProvider.getPropertyValue("authtoken");
         displayLog("environment " + environment);
-
-        /*
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(new Intent(this, io.okcollect.android.services.ForegroundService.class));
-            } else {
-                startService(new Intent(this, io.okcollect.android.services.ForegroundService.class));
-            }
-        } catch (Exception jse) {
-            displayLog("jsonexception jse " + jse.toString());
-        }
-        */
 
         completedWell = false;
         isWebInterface = false;
@@ -203,39 +141,7 @@ public class OkHeartActivity extends AppCompatActivity {
                 displayLog("uniqueId error " + e.toString());
             }
             //apiKey = dataProvider.getPropertyValue("applicationKey");
-            displayLog("applicationKey"+apiKey);
-
-            /*
-            File filesDirVerify = new File(getFilesDir() + "/verify.txt");
-            if (filesDirVerify.exists()) {
-                displayLog("filesDirVerify exists");
-                try {
-                    verify = getStringFromFile(filesDirVerify.getAbsolutePath());
-                    displayLog("verify " + verify);
-                } catch (Exception e) {
-                    // Hmm, the applicationId file was malformed or something. Assume it
-                    // doesn't match.
-                    displayLog("filesDirVerify error " + e.toString());
-                }
-            } else {
-                displayLog("filesDirVerify does not exist");
-            }
-
-            File filesDir = new File(getFilesDir() + "/okcollect.txt");
-            if (filesDir.exists()) {
-                displayLog("filesdir exists");
-                try {
-                    apiKey = getStringFromFile(filesDir.getAbsolutePath());
-                    displayLog("api key " + apiKey);
-                } catch (Exception e) {
-                    // Hmm, the applicationId file was malformed or something. Assume it
-                    // doesn't match.
-                    displayLog("error " + e.toString());
-                }
-            } else {
-                displayLog("filesdir does not exist");
-            }
-            */
+            displayLog("applicationKey" + apiKey);
 
             File filesDirCustom = new File(getFilesDir() + "/custom.txt");
             if (filesDirCustom.exists()) {
@@ -415,56 +321,6 @@ public class OkHeartActivity extends AppCompatActivity {
             } else {
                 tologinwith = phonenumber;
             }
-            /*
-            String stuff = "{\n" +
-                    "  \"message\": \"select_location\",\n" +
-                    "  \"payload\": {\n" +
-                    "    \"user\": {\n" +
-                    "      \"firstName\": \"" + firstname + "\",\n" +
-                    "      \"lastName\": \"" + lastname + "\",\n" +
-                    "      \"phone\": \"" + tologinwith + "\"\n" +
-                    "    },\n" +
-                    "    \"style\": {\n" +
-                    "      \"base\": {\n" +
-                    "        \"color\": \"" + color + "\",\n" +
-                    "        \"name\": \"" + name + "\",\n" +
-                    "        \"logo\": \"" + logo + "\"\n" +
-                    "      }\n" +
-                    "    },\n" +
-
-                    "    \"config\": {\n" +
-                    "      \"appBar\": {\n" +
-                    "        \"color\": \"" + appbarcolor + "\",\n" +
-                    "        \"visible\": " + appbarvisible + "\n" +
-                    "      },\n" +
-                    "    \"streetView\": " + enablestreetview + "\n" +
-                    "    },\n" +
-
-                    "    \"auth\": {\n" +
-                    "      \"authToken\": \"" + apiKey + "\"\n" +
-                    "    },\n" +
-                    "    \"parent\": {\n" +
-                    "      \"name\": \"okHeartAndroidSDK\",\n" +
-                    "      \"version\": \"" + io.okcollect.android.BuildConfig.VERSION_NAME + "\",\n" +
-                    "      \"build\": \"" + io.okcollect.android.BuildConfig.VERSION_CODE + "\",\n" +
-                    "      \"namespace\": \"com.develop.okheartandroidsdk.okhi\"\n" +
-                    "    }\n" +
-                    "    \"context\": {\n" +
-                    "      \"platform\": \"android\",\n" +
-                    "      \"developer\": \"okhi\",\n" +
-                    "      \"library\": {\n" +
-                    "           \"name\": \"okcollect-android-sdk\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "       },\n" +
-                    "      \"container\": {\n" +
-                    "           \"name\": \"Quickteller App\",\n" +
-                    "            \"version\": \"2.0.0\"\n" +
-                    "       },\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}";
-            */
-
 
             String payload = "{\n" +
                     "      message: 'select_location',\n" +
@@ -514,12 +370,6 @@ public class OkHeartActivity extends AppCompatActivity {
         } catch (Exception e) {
             displayLog("jsonexception error " + e.toString());
         }
-    }
-
-    private void sendGPSLocation(JSONObject jsonObject) {
-
-        myWebView.evaluateJavascript("javascript:receiveAndroidData(" + jsonObject.toString() + ")", null);
-
     }
 
     @Override
@@ -587,15 +437,11 @@ public class OkHeartActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String urlString) {
             displayLog("onPageFinished loadVariables(newURL) " + urlString);
-            /*
-            if(newURL!="") {
-                myWebView.loadUrl("javascript:loadVariables(" + "\"" + newURL + "\")");
-            }
-            */
+
         }
 
         private void displayLog(String log) {
-            Log.i(TAG, log);
+            //Log.i(TAG, log);
         }
     }
 }

@@ -1,8 +1,6 @@
 package io.okcollect.android;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,12 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,35 +24,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 import io.okcollect.android.callback.OkCollectCallback;
-
-import static io.okcollect.android.utilities.Constants.unauthorized;
 
 
 public final class OkCollect extends ContentProvider {
 
     private static final String TAG = "OkCollect";
-    private static final int THREAD_WAIT_TIMEOUT_IN_MS = 100;
-    protected static Integer resume_ping_frequency = null;
-    protected static Integer ping_frequency = null;
-    protected static Integer background_frequency = null;
-    protected static String sms_template = null;
-    protected static Double gps_accuracy = null;
-    protected static Boolean kill_switch = null;
     protected static io.okcollect.android.database.DataProvider dataProvider;
     private static String firstname, lastname, phonenumber, requestSource;
     private static Context mContext;
     private static OkCollectCallback callback;
-    private static String appkey;
-    private static String uniqueId;
-    //private static String remoteSmsTemplate;
-    private static NotificationManager notificationManager;
 
     public OkCollect() {
     }
-    //initialize(clientkey, branchid, environment )
 
     public static void initialize(@NonNull final String clientKey, @NonNull final String branchId, @NonNull final String environment) throws RuntimeException {
 
@@ -68,14 +46,8 @@ public final class OkCollect extends ContentProvider {
 
         if (clientKey != null) {
             if (clientKey.length() > 0) {
-                //if (applicationKey.startsWith("r:")) {
-                    startInitialization(clientKey, branchId, environment, false);
-                    /*
-                } else {
-                    throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
+                startInitialization(clientKey, branchId, environment, false);
 
-                }
-            */
             } else {
                 throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
             }
@@ -85,7 +57,6 @@ public final class OkCollect extends ContentProvider {
 
     }
 
-    //displayclient(firstname, lastname, phonenumber )
 
     public static void displayClient(@NonNull OkCollectCallback okCollectCallback, @NonNull JSONObject userObject) throws RuntimeException {
 
@@ -146,7 +117,6 @@ public final class OkCollect extends ContentProvider {
         } else {
             throw new RuntimeException("DisplayClient error", new Throwable("Confirm your JSONObject is not null"));
         }
-        //fetchAddresses(jsonObject);
 
 
     }
@@ -154,25 +124,7 @@ public final class OkCollect extends ContentProvider {
     private static void startInitialization(final String applicationKey, final String branchid, final String environment, final Boolean verify) {
         displayLog("workmanager startInitialization " + verify);
 
-        //io.okcollect.android.utilities.ConfigurationFile configurationFile = new io.okcollect.android.utilities.ConfigurationFile(mContext, environment);
         try {
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("uniqueId", uniqueId);
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("eventName", "Android SDK");
-            parameters.put("type", "initialize");
-            parameters.put("subtype", "initialize");
-            parameters.put("onObject", "okHeartAndroidSDK");
-            parameters.put("view", "app");
-            parameters.put("appKey", "" + applicationKey);
-            parameters.put("verify", "" + verify);
-            sendEvent(parameters, loans);
-        } catch (Exception e1) {
-            displayLog("error attaching afl to ual " + e1.toString());
-        }
-        try {
-
-
             dataProvider.insertStuff("branchid", branchid);
             dataProvider.insertStuff("environment", environment);
         } catch (Exception io) {
@@ -188,9 +140,6 @@ public final class OkCollect extends ContentProvider {
 
         }
         dataProvider.insertStuff("verify", "" + verify);
-
-
-        appkey = applicationKey;
         dataProvider.insertStuff("applicationKey", applicationKey);
 
     }
@@ -232,73 +181,16 @@ public final class OkCollect extends ContentProvider {
             }
             String customString = jsonObject.toString();
             //displayLog("logo "+jsonObject.get("logo"));
-            String testString = "{\"color\":\"" + appBarColor + "\", \"name\": \"" + organisationName + "\",\"logo\": \"" + appLogo + "\"}";
+            //String testString = "{\"color\":\"" + appBarColor + "\", \"name\": \"" + organisationName + "\",\"logo\": \"" + appLogo + "\"}";
             displayLog("custom string " + customString);
             writeToFileCustomize(customString);
-            try {
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                HashMap<String, String> parameters = new HashMap<>();
-                parameters.put("eventName", "Android SDK");
-                parameters.put("type", "initialize");
-                parameters.put("subtype", "customize");
-                parameters.put("onObject", "okHeartAndroidSDK");
-                parameters.put("view", "app");
-                parameters.put("customString ", customString);
-                parameters.put("appKey", "" + appkey);
-                sendEvent(parameters, loans);
-            } catch (Exception e1) {
-                displayLog("error attaching afl to ual " + e1.toString());
-            }
+
         } catch (Exception io) {
 
         } finally {
 
         }
     }
-
-    /*
-    public static void displayClient(OkCollectCallback okHiCallback, JSONObject jsonObject) {
-
-        displayLog("display client " + jsonObject.toString());
-
-        if(checkPermission()) {
-            startActivity(okHiCallback, jsonObject);
-        }
-        else{
-            String cause = checkPermissionCause();
-            if((cause.equalsIgnoreCase("Manifest.permission.ACCESS_FINE_LOCATION granted")) ||
-                    (cause.equalsIgnoreCase("Manifest.permission.ACCESS_BACKGROUND_LOCATION granted"))){
-                startActivity(okHiCallback, jsonObject);
-            }
-            else{
-                if(verify != null){
-                    if(verify){
-                        try {
-                            JSONObject responseJson = new JSONObject();
-                            responseJson.put("message", "fatal_exit");
-                            JSONObject payloadJson = new JSONObject();
-                            payloadJson.put("Error","Location permission not granted");
-                            payloadJson.put("message", cause);
-                            responseJson.put("payload", payloadJson);
-                            displayLog(responseJson.toString());
-                            okHiCallback.querycomplete(responseJson);
-                        }
-                        catch (JSONException jse){
-
-                        }
-                    }
-                    else{
-                        startActivity(okHiCallback, jsonObject);
-                    }
-                }
-                else{
-                    startActivity(okHiCallback, jsonObject);
-                }
-            }
-        }
-    }
-*/
 
     private static void startActivity(@NonNull final OkCollectCallback okCollectCallback, @NonNull final JSONObject jsonObject) {
         displayLog("startActivity");
@@ -307,24 +199,6 @@ public final class OkCollect extends ContentProvider {
         lastname = jsonObject.optString("lastName");
         phonenumber = jsonObject.optString("phone");
         requestSource = "create";
-
-        try {
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("phonenumber", phonenumber);
-            loans.put("firstname", firstname);
-            loans.put("lastname", lastname);
-            loans.put("uniqueId", uniqueId);
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("eventName", "Android SDK");
-            parameters.put("type", "initialize");
-            parameters.put("subtype", "displayClient");
-            parameters.put("onObject", "okHeartAndroidSDK");
-            parameters.put("view", "app");
-            parameters.put("appKey", "" + appkey);
-            sendEvent(parameters, loans);
-        } catch (Exception e1) {
-            displayLog("error attaching afl to ual " + e1.toString());
-        }
 
         dataProvider.insertStuff("phonenumber", phonenumber);
         dataProvider.insertStuff("requestSource", requestSource);
@@ -335,54 +209,46 @@ public final class OkCollect extends ContentProvider {
             io.okcollect.android.callback.AuthtokenCallback authtokenCallback = new io.okcollect.android.callback.AuthtokenCallback() {
                 @Override
                 public void querycomplete(String response, boolean success) {
-                    if(success){
-                        displayLog("success response "+response);
-                        try{
+                    if (success) {
+                        displayLog("success response " + response);
+                        try {
                             JSONObject jsonObject = new JSONObject(response);
                             String token = jsonObject.optString("authorization_token");
-                            displayLog("token "+token);
-                            dataProvider.insertStuff("authtoken",token);
+                            displayLog("token " + token);
+                            dataProvider.insertStuff("authtoken", token);
 
                             Intent intent = new Intent(mContext, io.okcollect.android.activity.OkHeartActivity.class);
                             intent.putExtra("firstname", firstname);
                             intent.putExtra("lastname", lastname);
                             intent.putExtra("phone", phonenumber);
-                            intent.putExtra("uniqueId", uniqueId);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             displayLog("here");
                             mContext.startActivity(intent);
 
-                            //OkCollect.initialize(token, "branchid", "devmaster");
-                            //OkCollect.customize("#ba0c2f", "okhi", "https://cdn.okhi.co/icon.png","#ba0c2f", true, true);
-
+                        } catch (Exception e) {
+                            displayLog("error " + e.toString());
                         }
-                        catch (Exception e){
-                            displayLog("error "+e.toString());
-                        }
-                    }
-                    else{
-                        displayLog("failed response "+response);
-                        try{
+                    } else {
+                        displayLog("failed response " + response);
+                        try {
                             JSONObject jsonObject2 = new JSONObject();
                             jsonObject2.put("error", "The credentials you have provided are invalid");
                             JSONObject jsonObject1 = new JSONObject();
                             jsonObject1.put("message", "unauthorized");
                             jsonObject1.put("payload", jsonObject2);
-                           okCollectCallback.querycomplete(jsonObject1);
-                        }
-                        catch (Exception e){
+                            okCollectCallback.querycomplete(jsonObject1);
+                        } catch (Exception e) {
 
                         }
                     }
                 }
             };
 
-            //"i3c5W92cB8"
             String branchid = dataProvider.getPropertyValue("branchid");
             String applicationKey = dataProvider.getPropertyValue("applicationKey");
             String environment = dataProvider.getPropertyValue("environment");
 
-            displayLog("branchid "+branchid+" clientkey "+applicationKey);
+            displayLog("branchid " + branchid + " clientkey " + applicationKey);
 
             String tologinwith;
             if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
@@ -393,7 +259,7 @@ public final class OkCollect extends ContentProvider {
 
             io.okcollect.android.asynctask.AnonymoussigninTask anonymoussigninTask =
                     new io.okcollect.android.asynctask.AnonymoussigninTask(mContext, authtokenCallback,
-                    branchid, applicationKey , "verify",tologinwith, environment);
+                            branchid, applicationKey, "verify", tologinwith, environment);
             anonymoussigninTask.execute();
 
 
@@ -406,25 +272,6 @@ public final class OkCollect extends ContentProvider {
     private static String checkPermissionCause() {
 
         String environment = dataProvider.getPropertyValue("environment");
-
-        if (environment != null) {
-            if (environment.length() > 0) {
-                if (environment.equalsIgnoreCase("PROD")) {
-
-                } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-
-                } else if (environment.equalsIgnoreCase("SANDBOX")) {
-
-                } else {
-
-                }
-            } else {
-                environment = "PROD";
-            }
-        } else {
-            environment = "PROD";
-        }
-
 
         String permission;
 
@@ -468,25 +315,6 @@ public final class OkCollect extends ContentProvider {
     }
 
     public static boolean checkPermission() {
-        String environment = dataProvider.getPropertyValue("environment");
-
-        if (environment != null) {
-            if (environment.length() > 0) {
-                if (environment.equalsIgnoreCase("PROD")) {
-
-                } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-
-                } else if (environment.equalsIgnoreCase("SANDBOX")) {
-
-                } else {
-
-                }
-            } else {
-                environment = "PROD";
-            }
-        } else {
-            environment = "PROD";
-        }
 
         Boolean permission;
 
@@ -529,154 +357,8 @@ public final class OkCollect extends ContentProvider {
         return permission;
     }
 
-    /*
-    public static void manualPing(@NonNull io.okcollect.android.callback.OkCollectCallback okHiCallback, @NonNull JSONObject jsonObject) {
-
-        displayLog("display client " + jsonObject.toString());
-
-
-        callback = okHiCallback;
-        firstname = jsonObject.optString("firstName");
-        lastname = jsonObject.optString("lastName");
-        phonenumber = jsonObject.optString("phone");
-
-        try {
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("phonenumber", phonenumber);
-            loans.put("firstname", firstname);
-            loans.put("lastname", lastname);
-            loans.put("uniqueId", uniqueId);
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("eventName", "Android SDK");
-            parameters.put("type", "initialize");
-            parameters.put("subtype", "manualPing");
-            parameters.put("onObject", "okHeartAndroidSDK");
-            parameters.put("view", "app");
-            parameters.put("appKey", "" + appkey);
-            sendEvent(parameters, loans);
-        } catch (Exception e1) {
-            displayLog("error attaching afl to ual " + e1.toString());
-        }
-
-        String tempPhonenumber = null;
-        if (phonenumber != null) {
-            if (phonenumber.length() > 0) {
-                if (phonenumber.startsWith("0")) {
-                    tempPhonenumber = "+254" + phonenumber.substring(1);
-                } else {
-                    tempPhonenumber = phonenumber;
-                }
-                List<io.okcollect.android.datamodel.AddressItem> addressItemList = dataProvider.getAllAddressList();
-                String environment = dataProvider.getPropertyValue("environment");
-                if (addressItemList.size() > 0) {
-                    sendPingSMS(okHiCallback, tempPhonenumber, environment);
-                } else {
-                    try {
-                        JSONObject responseJson = new JSONObject();
-                        responseJson.put("message", "sms_failure");
-                        JSONObject payloadJson = new JSONObject();
-                        payloadJson.put("errorCode", -1);
-                        payloadJson.put("error", "Missing addresses");
-                        payloadJson.put("message", "Please create at least one address");
-                        responseJson.put("payload", payloadJson);
-                        displayLog(responseJson.toString());
-                        okHiCallback.querycomplete(responseJson);
-                    } catch (JSONException jse) {
-
-                    }
-                }
-            } else {
-                try {
-                    JSONObject responseJson = new JSONObject();
-                    responseJson.put("message", "fatal_exit");
-                    JSONObject payloadJson = new JSONObject();
-                    payloadJson.put("errorCode", -1);
-                    payloadJson.put("error", "Missing parameter");
-                    payloadJson.put("message", "Phone number cannot be an empty string");
-                    responseJson.put("payload", payloadJson);
-                    displayLog(responseJson.toString());
-                    okHiCallback.querycomplete(responseJson);
-                } catch (JSONException jse) {
-
-                }
-            }
-        } else {
-            try {
-                JSONObject responseJson = new JSONObject();
-                responseJson.put("message", "fatal_exit");
-                JSONObject payloadJson = new JSONObject();
-                payloadJson.put("errorCode", -1);
-                payloadJson.put("error", "Missing parameter");
-                payloadJson.put("message", "Phone number cannot be null");
-                responseJson.put("payload", payloadJson);
-                displayLog(responseJson.toString());
-                okHiCallback.querycomplete(responseJson);
-            } catch (JSONException jse) {
-
-            }
-        }
-    }
-
-    private static void sendPingSMS(final io.okcollect.android.callback.OkCollectCallback okHiCallback, String phonenumber, String environment) {
-        try {
-            String remoteSmsTemplate = dataProvider.getPropertyValue("sms_template");
-            String message = remoteSmsTemplate + uniqueId;
-            final HashMap<String, String> jsonObject = new HashMap<>();
-            jsonObject.put("userId", "GrlaR3LHUP");
-            jsonObject.put("sessionToken", "r:3af107bf99e4c6f2a91e6fec046f5fc7");
-            jsonObject.put("customName", "test");
-            //jsonObject.put("ualId", verifyDataItem.getUalId());
-
-            jsonObject.put("phoneNumber", phonenumber);
-            jsonObject.put("phone", phonenumber);
-            jsonObject.put("message", message);
-            jsonObject.put("uniqueId", uniqueId);
-            io.okcollect.android.callback.SendCustomLinkSmsCallBack sendCustomLinkSmsCallBack = new io.okcollect.android.callback.SendCustomLinkSmsCallBack() {
-                @Override
-                public void querycomplete(String response, boolean status) {
-                    if (status) {
-                        //displayLog("send sms success " + response);
-                        try {
-                            JSONObject responseJson = new JSONObject();
-                            responseJson.put("message", "sendSMS");
-                            JSONObject payloadJson = new JSONObject();
-                            payloadJson.put("errorCode", 0);
-                            payloadJson.put("error", "SMS sent");
-                            payloadJson.put("message", "SMS sent");
-                            responseJson.put("payload", payloadJson);
-                            displayLog(responseJson.toString());
-                            okHiCallback.querycomplete(responseJson);
-                        } catch (JSONException jse) {
-
-                        }
-                    } else {
-                        displayLog("Error! " + response);
-                        try {
-                            JSONObject responseJson = new JSONObject();
-                            responseJson.put("message", "sendSMS");
-                            JSONObject payloadJson = new JSONObject();
-                            payloadJson.put("errorCode", 0);
-                            payloadJson.put("error", "SMS not sent");
-                            payloadJson.put("message", response);
-                            responseJson.put("payload", payloadJson);
-                            displayLog(responseJson.toString());
-                            okHiCallback.querycomplete(responseJson);
-                        } catch (JSONException jse) {
-
-                        }
-                    }
-                }
-            };
-            io.okcollect.android.asynctask.SendCustomLinkSmsTask sendCustomLinkSmsTask = new io.okcollect.android.asynctask.SendCustomLinkSmsTask(mContext, sendCustomLinkSmsCallBack, jsonObject, environment);
-            sendCustomLinkSmsTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } catch (Exception jse) {
-            displayLog("jsonexception " + jse.toString());
-        }
-    }
-    */
-
     private static void displayLog(String log) {
-        //Log.i(TAG, log);
+        ////Log.i(TAG, log);
     }
 
     private static void writeToFile(String customString) {
@@ -747,128 +429,12 @@ public final class OkCollect extends ContentProvider {
 
     }
 
-    private static void writeToFileVerify(String apiKey, String who) {
-        try {
-            File path = mContext.getFilesDir();
-            File file = new File(path, "verify.txt");
-            if (!file.exists()) {
-                FileOutputStream stream = new FileOutputStream(file);
-                try {
-
-                    stream.write(apiKey.getBytes());
-                } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
-                } finally {
-                    stream.close();
-                }
-            } else {
-                file.delete();
-                FileOutputStream stream = new FileOutputStream(file);
-                try {
-
-                    stream.write(apiKey.getBytes());
-                } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
-                } finally {
-                    stream.close();
-                }
-            }
-
-            dataProvider.insertStuff("verify", "" + apiKey);
-
-            displayLog(who + "okhi done writing verify " + apiKey);
-        } catch (Exception e) {
-            displayLog("write to file error " + e.toString());
-
-        }
-
-    }
-
     public static OkCollectCallback getCallback() {
         return callback;
     }
 
     public static void setCallback(OkCollectCallback callback) {
         OkCollect.callback = callback;
-    }
-
-    public static void requestPermission(@NonNull Activity activity, @NonNull int MY_PERMISSIONS_ACCESS_FINE_LOCATION) {
-        String environment = dataProvider.getPropertyValue("environment");
-        if (environment != null) {
-            if (environment.length() > 0) {
-                if (environment.equalsIgnoreCase("PROD")) {
-
-                } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-
-                } else if (environment.equalsIgnoreCase("SANDBOX")) {
-
-                } else {
-
-                }
-            } else {
-                environment = "PROD";
-            }
-        } else {
-            environment = "PROD";
-        }
-
-
-        Boolean permission = false;
-
-        boolean permissionAccessFineLocationApproved =
-                ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED;
-
-        if (permissionAccessFineLocationApproved) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                boolean backgroundLocationPermissionApproved =
-                        ActivityCompat.checkSelfPermission(mContext,
-                                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED;
-
-                if (backgroundLocationPermissionApproved) {
-                    // App can access location both in the foreground and in the background.
-                    // Start your service that doesn't have a foreground service type
-                    // defined.
-
-                    //Constants.scheduleJob(MainActivity.this);
-                    //checkLocationSettings();
-                } else {
-                    // App can only access location in the foreground. Display a dialog
-                    // warning the user that your app must have all-the-time access to
-                    // location in order to function properly. Then, request background
-                    // location.
-
-                    ActivityCompat.requestPermissions(activity, new String[]{
-                                    Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-                            MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-                }
-            } else {
-                permission = true;
-
-            }
-        } else {
-            // App doesn't have access to the device's location at all. Make full request
-            // for permission.
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ActivityCompat.requestPermissions(activity, new String[]{
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                        },
-                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-            } else {
-                ActivityCompat.requestPermissions(activity, new String[]{
-                                Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_ACCESS_FINE_LOCATION);
-            }
-
-        }
-    }
-
-    private static void sendEvent(HashMap<String, String> parameters, HashMap<String, String> loans) {
-
     }
 
     private static String convertStreamToString(InputStream is) throws IOException {
@@ -900,534 +466,6 @@ public final class OkCollect extends ContentProvider {
         displayLog("getStringFromFile2");
         return ret;
     }
-
-    private void triggerSpecial() {
-
-    }
-
-  /*
-    private static void stopPeriodicPing() {
-
-        try {
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("uniqueId", uniqueId);
-            HashMap<String, String> parameters = new HashMap<>();
-            parameters.put("eventName", "Data Collection Service");
-            parameters.put("subtype", "stopPeriodicPing");
-            parameters.put("type", "doWork");
-            parameters.put("onObject", "app");
-            parameters.put("view", "OkCollect");
-            sendEvent(parameters, loans);
-        } catch (Exception e1) {
-            displayLog("error attaching afl to ual " + e1.toString());
-        }
-        WorkManager.getInstance().cancelUniqueWork("ramogi");
-
-    }
-
-    private static void startKeepPeriodicPing(Integer pingTime, String uniqueId) {
-        displayLog("workmanager startKeepPeriodicPing " + pingTime);
-        try {
-
-            try {
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                HashMap<String, String> parameters = new HashMap<>();
-                parameters.put("eventName", "Data Collection Service");
-                parameters.put("subtype", "startKeepPeriodicPing");
-                parameters.put("type", "doWork");
-                parameters.put("onObject", "app");
-                parameters.put("view", "OkCollect");
-                sendEvent(parameters, loans);
-            } catch (Exception e1) {
-                displayLog("error attaching afl to ual " + e1.toString());
-            }
-
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
-
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker2.class, pingTime, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.KEEP, request);
-
-        } catch (Exception e) {
-            displayLog("my worker error " + e.toString());
-        }
-    }
-
-    private static void startReplacePeriodicPing(Integer pingTime, String uniqueId) {
-        displayLog("workmanager startReplacePeriodicPing");
-        try {
-            try {
-                HashMap<String, String> loans = new HashMap<>();
-                loans.put("uniqueId", uniqueId);
-                HashMap<String, String> parameters = new HashMap<>();
-                parameters.put("eventName", "Data Collection Service");
-                parameters.put("subtype", "startReplacePeriodicPing");
-                parameters.put("type", "doWork");
-                parameters.put("onObject", "app");
-                parameters.put("view", "OkCollect");
-                sendEvent(parameters, loans);
-            } catch (Exception e1) {
-                displayLog("error attaching afl to ual " + e1.toString());
-            }
-
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
-
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker2.class, pingTime, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.REPLACE, request);
-
-
-        } catch (Exception e) {
-            displayLog("my worker error " + e.toString());
-        }
-    }
-*/
-
-/*
-    private void updateDatabase() {
-
-        List<io.okcollect.android.datamodel.AddressItem> addressItemList = dataProvider.getAllAddressList();
-
-        if (addressItemList.size() > 0) {
-            List<Map<String, Object>> addresses = new ArrayList<>();
-
-
-            HashMap<String, String> loans = new HashMap<>();
-            loans.put("uniqueId", uniqueId);
-            HashMap<String, String> parameters = new HashMap<>();
-
-            final Long timemilliseconds = System.currentTimeMillis();
-
-            final ParseObject parseObject = new ParseObject("UserVerificationData");
-
-            /*
-            parseObject.put("latitude", lat);
-            parseObject.put("longitude", lng);
-            parseObject.put("gpsAccuracy", acc);
-            ParseGeoPoint parseGeoPoint = new ParseGeoPoint(lat, lng);
-            parseObject.put("geoPoint", parseGeoPoint);
-            */
-/*
-            parseObject.put("geoPointSource", "webClientBackgroundGPS");
-            parseObject.put("timemilliseconds", timemilliseconds);
-            parseObject.put("device", getDeviceModelAndBrand());
-            parseObject.put("model", Build.MODEL);
-            parseObject.put("brand", Build.MANUFACTURER);
-            parseObject.put("OSVersion", Build.VERSION.SDK_INT);
-            parseObject.put("OSName", "Android");
-            parseObject.put("appVersionCode", io.okcollect.android.BuildConfig.VERSION_CODE);
-            parseObject.put("appVersionName", io.okcollect.android.BuildConfig.VERSION_NAME);
-
-            try {
-                WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-                WifiInfo info = wifiManager.getConnectionInfo();
-                String ssid = info.getSSID();
-                displayLog("ssid " + ssid);
-                if (ssid.contains("unknown")) {
-
-                } else {
-                    if (ssid.length() > 0) {
-                        displayLog("ssid " + ssid.substring(1, ssid.length() - 1));
-                        parameters.put("ssid", ssid);
-                        parseObject.put("ssid", ssid);
-                    } else {
-
-                    }
-                }
-
-
-                try {
-                    List<String> configuredSSIDList = new ArrayList<>();
-                    //List<String> scannedSSIDList = new ArrayList<>();
-                    List<WifiConfiguration> configuredList = wifiManager.getConfiguredNetworks();
-                    //List<ScanResult> scanResultList = wifiManager.getScanResults();
-                    //displayLog("configured list size "+configuredList.size());
-                    //displayLog("scanned list size "+scanResultList.size());
-                    for (WifiConfiguration config : configuredList) {
-                        //displayLog("configured list "+config.SSID);
-                        configuredSSIDList.add(config.SSID);
-                    }
-                    if (configuredSSIDList != null) {
-                        if (configuredSSIDList.size() > 0) {
-                            parameters.put("configuredSSIDs", configuredSSIDList.toString());
-                        }
-                    }
-                    parseObject.put("configuredSSIDs", configuredSSIDList);
-
-                } catch (Exception e) {
-                    displayLog("error gettign scanned list " + e.toString());
-                }
-
-
-            } catch (Exception e) {
-                displayLog(" error getting wifi info " + e.toString());
-            }
-
-            try{
-                String phonenumber = dataProvider.getPropertyValue("phonenumber");
-                if(phonenumber != null){
-                    if(phonenumber.length() > 0){
-                        parseObject.put("phonenumber", phonenumber);
-                    }
-                }
-            }
-            catch (Exception e){
-                displayLog("error getting phonenumber "+e.toString());
-            }
-
-
-            try {
-                boolean isPlugged = false;
-                BatteryManager bm = (BatteryManager) mContext.getSystemService(BATTERY_SERVICE);
-                int batLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-                parameters.put("batteryLevel", "" + batLevel);
-                parseObject.put("batteryLevel", batLevel);
-
-                Intent intent = mContext.registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-                int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-                isPlugged = plugged == BatteryManager.BATTERY_PLUGGED_AC || plugged == BatteryManager.BATTERY_PLUGGED_USB;
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-                    isPlugged = isPlugged || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-                }
-                parameters.put("isPlugged", "" + isPlugged);
-                parseObject.put("isPlugged", isPlugged);
-
-                // Are we charging / charged?
-                int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-                boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                        status == BatteryManager.BATTERY_STATUS_FULL;
-                parameters.put("isCharging", "" + isCharging);
-                parseObject.put("isCharging", isCharging);
-
-                // How are we charging?
-                int chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-                boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-                parameters.put("usbCharge", "" + usbCharge);
-                parseObject.put("usbCharge", usbCharge);
-                boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-                parameters.put("acCharge", "" + acCharge);
-                parseObject.put("acCharge", acCharge);
-
-            } catch (Exception e) {
-                displayLog(" error getting battery status " + e.toString());
-            }
-
-            parseObject.put("uniqueId", uniqueId);
-            parameters.put("uniqueId", uniqueId);
-
-            try {
-
-                parameters.put("uniqueId", uniqueId);
-                parameters.put("cookieToken", uniqueId);
-                parameters.put("eventName", "Data collection Service");
-                parameters.put("subtype", "saveBackgroundData");
-                parameters.put("type", "saveData");
-                parameters.put("onObject", "backgroundService");
-                parameters.put("view", "worker");
-                parameters.put("branch", "app_interswitch");
-                //parameters.put("deliveryId", null);
-                //parameters.put("ualId", addressParseObject.getClaimUalId());
-                parameters.put("userAffiliation", "interswitch");
-
-                /*
-                parameters.put("latitude", "" + lat);
-                parameters.put("longitude", "" + lng);
-                parameters.put("gpsAccuracy", "" + acc);
-                try {
-                    Location location2 = new Location("geohash");
-                    location2.setLatitude(lat);
-                    location2.setLongitude(lng);
-
-                    io.okcollect.android.utilities.geohash.GeoHash hash = io.okcollect.android.utilities.geohash.GeoHash.fromLocation(location2, 12);
-                    parameters.put("location", hash.toString());
-                } catch (Exception e) {
-                    displayLog("geomap error " + e.toString());
-                }
-                */
-/*
-                parameters.put("geoPointSource", "clientBackgroundGPS");
-                parameters.put("timemilliseconds", "" + timemilliseconds);
-                parameters.put("device", getDeviceModelAndBrand());
-                parameters.put("model", Build.MODEL);
-                parameters.put("brand", Build.MANUFACTURER);
-                parameters.put("OSVersion", "" + Build.VERSION.SDK_INT);
-                parameters.put("OSName", "Android");
-                parameters.put("appVersionCode", "" + io.okcollect.android.BuildConfig.VERSION_CODE);
-                parameters.put("appVersionName", "" + io.okcollect.android.BuildConfig.VERSION_NAME);
-                sendEvent(parameters, loans);
-            } catch (Exception e1) {
-                displayLog("error attaching afl to ual " + e1.toString());
-            }
-
-
-            for (int i = 0; i < addressItemList.size(); i++) {
-                try {
-                    io.okcollect.android.datamodel.AddressItem addressItem = addressItemList.get(i);
-                    //Float distance = getDistance(lat, lng, addressItem.getLat(), addressItem.getLng());
-                    Map<String, Object> nestedData = new HashMap<>();
-                    nestedData.put("ualId", addressItem.getUalid());
-                    nestedData.put("latitude", addressItem.getLat());
-                    nestedData.put("longitude", addressItem.getLng());
-                    if (distance < 100.0) {
-                        nestedData.put("verified", true);
-                    } else {
-                        nestedData.put("verified", false);
-                    }
-
-                    nestedData.put("distance", distance);
-                    HashMap<String, String> paramText = getTitleText(addressItem);
-                    nestedData.put("title", paramText.get("header"));
-                    nestedData.put("text", paramText.get("text"));
-                    addresses.add(nestedData);
-                } catch (Exception e) {
-
-                }
-            }
-            parseObject.put("addresses", addresses);
-            saveData(parseObject);
-        } else {
-            //add an event here saying we don't have addresses
-            //saveData(parseObject,  timemilliseconds);
-            //stopSelf();
-        }
-
-    }
-*/
-
-/*
-
-    private String getDeviceModelAndBrand() {
-
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.contains(manufacturer)) {
-            return model;
-        } else {
-            return manufacturer + " " + model;
-        }
-
-    }
-
-    private void saveData(ParseObject parseObject) {
-
-        displayLog("parse object save");
-        parseObject.saveEventually(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    displayLog("save parseobject success ");
-                    try {
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        HashMap<String, String> parameters = new HashMap<>();
-                        parameters.put("eventName", "Data Collection Service");
-                        parameters.put("subtype", "saveData");
-                        parameters.put("type", "parse");
-                        parameters.put("onObject", "success");
-                        parameters.put("view", "worker");
-                        sendEvent(parameters, loans);
-                    } catch (Exception e1) {
-                        displayLog("error attaching afl to ual " + e1.toString());
-                    }
-
-                } else {
-                    try {
-                        HashMap<String, String> loans = new HashMap<>();
-                        loans.put("uniqueId", uniqueId);
-                        HashMap<String, String> parameters = new HashMap<>();
-                        parameters.put("eventName", "Data Collection Service");
-                        parameters.put("subtype", "saveData");
-                        parameters.put("type", "parse");
-                        parameters.put("onObject", "failure");
-                        parameters.put("view", "worker");
-                        parameters.put("error", e.toString());
-                        sendEvent(parameters, loans);
-                    } catch (Exception e1) {
-                        displayLog("error attaching afl to ual " + e1.toString());
-                    }
-                    displayLog("save parseobject error " + e.toString());
-                }
-            }
-        });
-    }
-
-
-    private Float getDistance(Double latA, Double lngA, Double latB, Double lngB) {
-
-        Location locationA = new Location("point A");
-
-        locationA.setLatitude(latA);
-        locationA.setLongitude(lngA);
-
-        Location locationB = new Location("point B");
-
-        locationB.setLatitude(latB);
-        locationB.setLongitude(lngB);
-
-        Float me = locationA.distanceTo(locationB);
-        displayLog("getDistance " + latA + " " + lngA + " " + latB + " " + lngB + " distance " + me);
-        return me;
-
-    }
-
-
-    private HashMap<String, String> getTitleText(io.okcollect.android.datamodel.AddressItem model) {
-
-        String streetName = model.getStreetName();
-        String propertyName = model.getPropname();
-        String directions = model.getDirection();
-        String title = model.getLocationName();
-
-        displayLog(streetName + " " + propertyName + " " + directions + " " + title);
-
-        HashMap<String, String> titleText = new HashMap<>();
-
-        String header = "";
-        String text = "";
-        if (streetName != null) {
-            if (streetName.length() > 0) {
-                if (!(streetName.equalsIgnoreCase("null"))) {
-                    text = streetName;
-                } else {
-
-                    if (directions != null) {
-                        if (directions.length() > 0) {
-                            if (!(directions.equalsIgnoreCase("null"))) {
-                                text = directions;
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (directions != null) {
-                    if (directions.length() > 0) {
-                        if (!(directions.equalsIgnoreCase("null"))) {
-                            text = directions;
-                        }
-                    }
-                }
-            }
-        } else {
-            if (directions != null) {
-                if (directions.length() > 0) {
-                    if (!(directions.equalsIgnoreCase("null"))) {
-                        text = directions;
-                    }
-                }
-            }
-        }
-
-        if (title != null) {
-            if (title.length() > 0) {
-                if (!(title.equalsIgnoreCase("null"))) {
-                    header = title;
-                } else {
-
-                    if (propertyName != null) {
-                        if (propertyName.length() > 0) {
-                            if (!(propertyName.equalsIgnoreCase("null"))) {
-                                header = propertyName;
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (propertyName != null) {
-                    if (propertyName.length() > 0) {
-                        if (!(propertyName.equalsIgnoreCase("null"))) {
-                            header = propertyName;
-                        }
-                    }
-                }
-            }
-        } else {
-            if (propertyName != null) {
-                if (propertyName.length() > 0) {
-                    if (!(propertyName.equalsIgnoreCase("null"))) {
-                        header = propertyName;
-                    }
-                }
-            }
-        }
-        titleText.put("header", header);
-        titleText.put("text", text);
-        displayLog("titletext " + titleText.get("header") + " " + titleText.get("text"));
-        return titleText;
-    }
-
-    public static Integer getResume_ping_frequency() {
-        return resume_ping_frequency;
-    }
-
-
-    public static void setResume_ping_frequency(Integer resume_ping_frequency) {
-        OkCollect.resume_ping_frequency = resume_ping_frequency;
-    }
-
-    public static Integer getPing_frequency() {
-        return ping_frequency;
-    }
-
-    public static void setPing_frequency(Integer ping_frequency) {
-        OkCollect.ping_frequency = ping_frequency;
-    }
-
-    public static Integer getBackground_frequency() {
-        return background_frequency;
-    }
-
-    public static void setBackground_frequency(Integer background_frequency) {
-        OkCollect.background_frequency = background_frequency;
-    }
-
-    public static String getSms_template() {
-        return sms_template;
-    }
-
-    public static void setSms_template(String sms_template) {
-        OkCollect.sms_template = sms_template;
-    }
-
-    public static Double getGps_accuracy() {
-        return gps_accuracy;
-    }
-
-    public static void setGps_accuracy(Double gps_accuracy) {
-        OkCollect.gps_accuracy = gps_accuracy;
-    }
-
-    public static Boolean getKill_switch() {
-        return kill_switch;
-    }
-
-    public static void setKill_switch(Boolean kill_switch) {
-        OkCollect.kill_switch = kill_switch;
-    }
-
-    */
 
     @Nullable
     @Override
@@ -1462,174 +500,8 @@ public final class OkCollect extends ContentProvider {
         // get the context (Application context)
         mContext = getContext();
         dataProvider = new io.okcollect.android.database.DataProvider(mContext);
-        uniqueId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-
-        /*
-        List<io.okcollect.android.datamodel.AddressItem> addressItemList = dataProvider.getAllAddressList();
-        displayLog("foreground addressItemList " + addressItemList.size());
-        if (addressItemList.size() > 0) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    mContext.startForegroundService(new Intent(mContext, io.okcollect.android.services.ForegroundService.class));
-                } else {
-                    mContext.startService(new Intent(mContext, io.okcollect.android.services.ForegroundService.class));
-                }
-
-            } catch (Exception jse) {
-                displayLog("jsonexception jse " + jse.toString());
-            }
-        } else {
-            //we have no addresses to start foreground
-            displayLog("we have no addresses to start foreground");
-        }
-        */
-
-
-        try {
-            /*
-            Constraints constraints = new Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build();
-
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker2.class, 1800000, TimeUnit.MILLISECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 30, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.KEEP, request);
-            */
-
-            /*
-            Constraints constraints = new Constraints.Builder()
-                    .build();
-
-            Data inputData = new Data.Builder()
-                    .putString("uniqueId", uniqueId)
-                    .build();
-
-            PeriodicWorkRequest request =
-                    new PeriodicWorkRequest.Builder(MyWorker2.class, 900, TimeUnit.SECONDS)
-                            .setInputData(inputData)
-                            .setConstraints(constraints)
-                            .setBackoffCriteria(BackoffPolicy.LINEAR, 900, TimeUnit.SECONDS)
-                            .build();
-
-            WorkManager.getInstance().enqueueUniquePeriodicWork("ramogi", ExistingPeriodicWorkPolicy.KEEP, request);
-            */
-
-
-        } catch (Exception e) {
-            displayLog("my worker error " + e.toString());
-        }
 
         return true;
     }
 
-    /*
-    private static void startForegroundNotification2() {
-
-        displayLog("startForegroundNotification");
-
-
-        Bitmap largeIconBitmap = BitmapFactory.decodeResource(mContext.getResources(), io.okcollect.android.R.drawable.ic_launcher_foreground);
-
-        String channelId = mContext.getString(io.okcollect.android.R.string.default_notification_channel_id);
-        Intent playIntent = new Intent(mContext, SettingsActivity.class);
-        //playIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, playIntent, 0);
-        NotificationCompat.Action playAction = new NotificationCompat.Action(android.R.drawable.ic_media_play,
-                HtmlCompat.fromHtml("<font color=\"" + ContextCompat.getColor(mContext, R.color.colorPrimary) +
-                        "\">HIDE</font>", HtmlCompat.FROM_HTML_MODE_LEGACY), pendingIntent);
-
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(mContext, channelId)
-                        .setSmallIcon(io.okcollect.android.R.drawable.ic_stat_ic_notification)
-                        .setContentTitle("OkVerify")
-                        .setContentText("Location verification in progress")
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setLargeIcon(largeIconBitmap)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                        .setWhen(System.currentTimeMillis())
-                        //.setSound(defaultSoundUri)
-                        .addAction(playAction)
-                        .setFullScreenIntent(pendingIntent, true)
-                        //.setStyle(bigTextStyle)
-                        .setContentIntent(pendingIntent);
-
-
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Notification",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-
-        }
-        Notification notification = notificationBuilder.build();
-
-        notificationManager.notify(1, notification);
-
-
-    }
-    */
-
-/*
-    private static boolean restrictBackgroundData(boolean enable, int timeout) {
-        Boolean result = false;
-        try {
-            final ConnectivityManager connectivityManager = (ConnectivityManager) mContext
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            Class connectivityManagerClass = Class.forName(connectivityManager.getClass().getName());
-
-            final Method getNetworkPolicyManager = connectivityManagerClass.getDeclaredMethod(
-                    "getNetworkPolicyManager");
-            getNetworkPolicyManager.setAccessible(true);
-
-            final Object iNetworkPolicyManager = getNetworkPolicyManager.invoke(connectivityManager);
-            final Class iNetworkPolicyManagerClass = Class.forName(iNetworkPolicyManager.getClass()
-                    .getName());
-            final Method setRestrictBackground = iNetworkPolicyManagerClass.getDeclaredMethod("setRestrictBackground",
-                    boolean.class);
-            final Method getRestrictBackground = iNetworkPolicyManagerClass.getDeclaredMethod("getRestrictBackground");
-            setRestrictBackground.setAccessible(true);
-            getRestrictBackground.setAccessible(true);
-            // Check if the state is already set
-            result = (Boolean) getRestrictBackground.invoke(iNetworkPolicyManager);
-            result = ((result && enable) || ((!result) && (!enable)));
-
-            if (!result) {
-                // Set state
-                setRestrictBackground.invoke(iNetworkPolicyManager, enable);
-
-                while (timeout > 0) {
-                    // Check if the state is set
-                    result = (Boolean) getRestrictBackground.invoke(iNetworkPolicyManager);
-                    result = ((result && enable) || ((!result) && (!enable)));
-                    if (result) {
-                        break;
-                    }
-                    try {
-                        Thread.sleep(THREAD_WAIT_TIMEOUT_IN_MS);
-                    } catch (InterruptedException e) {
-                    }
-                    timeout -= THREAD_WAIT_TIMEOUT_IN_MS;
-                }
-            }
-        } catch (Exception e) {
-        }
-        return result;
-    }
-    */
 }
