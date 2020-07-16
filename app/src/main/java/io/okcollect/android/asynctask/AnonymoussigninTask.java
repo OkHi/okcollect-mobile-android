@@ -22,8 +22,8 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
     private AuthtokenCallback authtokenCallback;
     private String environment;
 
-    public AnonymoussigninTask(Context context, AuthtokenCallback authtokenCallback,
-                               String branchId, String clientKey, String scope, String userid, String environment) {
+    public AnonymoussigninTask(AuthtokenCallback authtokenCallback, String branchId, String clientKey,
+                               String scope, String userid, String environment) {
         this.authtokenCallback = authtokenCallback;
         this.branchId = branchId;
         this.clientKey = clientKey;
@@ -37,13 +37,9 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
         String result = null;
 
         try {
-            //String urlString = "https://dev-api.okhi.io/v5/auth/anonymous-signin";
-
             String urlString;
             if (environment.equalsIgnoreCase("PROD")) {
                 urlString = "https://api.okhi.io/v5/auth/anonymous-signin";
-            } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                urlString = "https://dev-api.okhi.io/v5/auth/anonymous-signin";
             } else if (environment.equalsIgnoreCase("SANDBOX")) {
                 urlString = "https://sandbox-api.okhi.io/v5/auth/anonymous-signin";
             } else {
@@ -63,7 +59,6 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
             RequestBody formBody = new FormBody.Builder()
                     .add("scopes[0]", scope)
                     .add("phone", userid)
-                    //.add("user_id", userid)
                     .build();
 
             Request request = new Request.Builder()
@@ -77,11 +72,11 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
             result = responseBody.string();
             responseCode = response.code();
         } catch (UnsupportedEncodingException e) {
-            displayLog("unsupported encoding exception " + e.toString());
+            //Log.i("Anonymous","unsupported encoding exception " + e.toString());
         } catch (IOException io) {
-            displayLog("io exception " + io.toString());
+            //Log.i("Anonymous","io exception " + io.toString());
         } catch (IllegalArgumentException iae) {
-            displayLog("illegal argument exception " + iae.toString());
+            //Log.i("Anonymous","illegal argument exception " + iae.toString());
         }
 
         return result;
@@ -89,8 +84,6 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        displayLog("responsecode " + responseCode);
-        displayLog("result " + result);
         if ((200 <= responseCode) && (responseCode < 300)) {
             authtokenCallback.querycomplete(result, true);
         } else {
@@ -98,9 +91,5 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
         }
 
 
-    }
-
-    private void displayLog(String log) {
-        ////Log.i("AnonymoussigninTask", log);
     }
 }
