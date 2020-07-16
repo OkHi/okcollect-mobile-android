@@ -3,7 +3,6 @@ package io.okcollect.android.activity;
 import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -16,13 +15,6 @@ import androidx.core.app.ActivityCompat;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import io.okcollect.android.BuildConfig;
 import io.okcollect.android.OkCollect;
 import io.okcollect.android.callback.OkCollectCallback;
@@ -30,40 +22,14 @@ import io.okcollect.android.callback.OkCollectCallback;
 
 public class OkHeartActivity extends AppCompatActivity {
 
-    private static final String TAG = "OkHeartActivity";
     private static WebView myWebView;
-    private static String firstname, lastname, phonenumber, clientKey, color, name, logo, appbarcolor;
-    private static Boolean appbarvisible, enablestreetview;
+    private static String firstname, lastname, phonenumber, clientKey,
+            organisationName, appThemeColor, appLogo, appBarColor;
+    private static Boolean appBarVisibility, enableStreetView;
     private static OkCollectCallback okCollectCallback;
     private static boolean completedWell, isWebInterface;
     private static io.okcollect.android.database.DataProvider dataProvider;
     private static String environment;
-
-
-    private static String convertStreamToString(InputStream is) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        Boolean firstLine = true;
-        while ((line = reader.readLine()) != null) {
-            if (firstLine) {
-                sb.append(line);
-                firstLine = false;
-            } else {
-                sb.append("\n").append(line);
-            }
-        }
-        reader.close();
-        return sb.toString();
-    }
-
-    private static String getStringFromFile(String filePath) throws IOException {
-        File fl = new File(filePath);
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = convertStreamToString(fin);
-        fin.close();
-        return ret;
-    }
 
     public static void setCompletedWell(boolean completedWell) {
         OkHeartActivity.completedWell = completedWell;
@@ -84,9 +50,6 @@ public class OkHeartActivity extends AppCompatActivity {
         completedWell = false;
         isWebInterface = false;
 
-        color = null;
-        name = null;
-        logo = null;
         try {
             Bundle bundle = getIntent().getExtras();
             try {
@@ -102,57 +65,36 @@ public class OkHeartActivity extends AppCompatActivity {
                 phonenumber = bundle.getString("phone");
             } catch (Exception e) {
             }
+            try {
+                appThemeColor = bundle.getString("appThemeColor");
+            } catch (Exception e) {
+            }
+            try {
+                appBarVisibility = bundle.getBoolean("appBarVisibility");
+            } catch (Exception e) {
+            }
+            try {
+                appBarColor = bundle.getString("appBarColor");
+            } catch (Exception e) {
+            }
+            try {
+                appLogo = bundle.getString("appLogo");
+            } catch (Exception e) {
+            }
 
-            File filesDirCustom = new File(getFilesDir() + "/custom.txt");
-            if (filesDirCustom.exists()) {
-                try {
-                    String customString = getStringFromFile(filesDirCustom.getAbsolutePath());
-                    if (customString != null) {
-                        if (customString.length() > 0) {
-                            JSONObject jsonObject = new JSONObject(customString);
-                            String tempColor = jsonObject.optString("color", "rgb(0, 131, 143)");
-                            String tempName = jsonObject.optString("name", "OKHI");
-                            String tempLogo = jsonObject.optString("logo", "https://cdn.okhi.co/okhi-logo-white.svg");
-                            String tempappbarcolor = jsonObject.optString("appbarcolor", "#f0f0f0");
-                            Boolean tempappbarvisible = jsonObject.optBoolean("appbarvisibility", false);
-                            Boolean tempstreetview = jsonObject.optBoolean("enablestreetview", false);
-                            if (tempColor != null) {
-                                if (tempColor.length() > 0) {
-                                    color = tempColor;
-                                }
-                            }
-                            if (tempName != null) {
-                                if (tempName.length() > 0) {
-                                    name = tempName;
-                                }
-                            }
-                            if (tempLogo != null) {
-                                if (tempLogo.length() > 0) {
-                                    logo = tempLogo;
-                                }
-                            }
-
-                            if (tempappbarcolor != null) {
-                                if (tempappbarcolor.length() > 0) {
-                                    appbarcolor = tempappbarcolor;
-                                }
-                            }
-                            if (tempappbarvisible != null) {
-                                appbarvisible = tempappbarvisible;
-                            }
-                            if (tempstreetview != null) {
-                                enablestreetview = tempstreetview;
-                            }
-
-                        }
-                    }
-                } catch (Exception e) {
-                }
+            try {
+                organisationName = bundle.getString("organisationName");
+            } catch (Exception e) {
+            }
+            try {
+                enableStreetView = bundle.getBoolean("enableStreetView");
+            } catch (Exception e) {
             }
 
         } catch (Exception e) {
 
         }
+
 
         myWebView = OkHeartActivity.this.findViewById(io.okcollect.android.R.id.webview);
         myWebView.setWebViewClient(new MyWebViewClient());
@@ -206,106 +148,84 @@ public class OkHeartActivity extends AppCompatActivity {
 
     public void startApp() {
 
+        String authorization_token = dataProvider.getPropertyValue("authorization_token");
         try {
-            if (color != null) {
-                if (color.length() > 0) {
-                } else {
-                    color = "rgb(0, 131, 143)";
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("message", "select_location");
+                JSONObject payload1 = new JSONObject();
+                JSONObject style = new JSONObject();
+                JSONObject base = new JSONObject();
+                if (appThemeColor != null) {
+                    if (appThemeColor.length() > 0) {
+                        base.put("color", appThemeColor);
+                    }
                 }
-            } else {
-                color = "rgb(0, 131, 143)";
-            }
-            if (name != null) {
-                if (name.length() > 0) {
-
-                } else {
-                    name = "OKHI";
+                if (organisationName != null) {
+                    if (organisationName.length() > 0) {
+                        base.put("name", organisationName);
+                    }
                 }
-            } else {
-                name = "OKHI";
-            }
-            if (logo != null) {
-                if (logo.length() > 0) {
-
-                } else {
-                    logo = "https://cdn.okhi.co/okhi-logo-white.svg";
+                if (appLogo != null) {
+                    if (appLogo.length() > 0) {
+                        base.put("logo", appLogo);
+                    }
                 }
-            } else {
-                logo = "https://cdn.okhi.co/okhi-logo-white.svg";
-            }
+                style.put("base", base);
+                payload1.put("style", style);
 
-            if (appbarcolor != null) {
-                if (appbarcolor.length() > 0) {
-                } else {
-                    appbarcolor = "#f0f0f0";
+                JSONObject user = new JSONObject();
+                user.put("firstName", firstname);
+                user.put("lastName", lastname);
+                user.put("phone", phonenumber);
+                payload1.put("user", user);
+
+                JSONObject auth = new JSONObject();
+                auth.put("authToken", authorization_token);
+                payload1.put("auth", auth);
+
+                JSONObject context = new JSONObject();
+                JSONObject container = new JSONObject();
+                container.put("name", "okCollectMobileAndroid");
+                container.put("version", BuildConfig.VERSION_NAME);
+                context.put("container", container);
+
+                JSONObject developer = new JSONObject();
+                developer.put("name", "okhi");
+                context.put("developer", developer);
+
+                JSONObject library = new JSONObject();
+                library.put("name", "okCollectMobileAndroid");
+                library.put("version", BuildConfig.VERSION_NAME);
+                context.put("library", library);
+
+                JSONObject platform = new JSONObject();
+                platform.put("name", "mobile");
+                context.put("platform", platform);
+                payload1.put("context", context);
+
+                JSONObject config = new JSONObject();
+                if (enableStreetView != null) {
+                    config.put("streetView", enableStreetView);
                 }
-            } else {
-                appbarcolor = "#f0f0f0";
+                JSONObject appBar = new JSONObject();
+                if (appBarColor != null) {
+                    if (appBarColor.length() > 0) {
+                        appBar.put("color", appBarColor);
+                    }
+                }
+                if (appBarVisibility != null) {
+                    appBar.put("visible", appBarVisibility);
+                }
+                if (appBar != null) {
+                    config.put("appBar", appBar);
+                }
+                payload1.put("config", config);
+                jsonObject.put("payload", payload1);
+                myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + jsonObject.toString().replace("\\", "") + ")", null);
+            } catch (Exception e) {
             }
-            if (appbarvisible != null) {
-
-            } else {
-                appbarvisible = false;
-            }
-            if (enablestreetview != null) {
-            } else {
-                enablestreetview = true;
-            }
-            String tologinwith;
-            if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
-                tologinwith = "+2547" + phonenumber.substring(2);
-            } else {
-                tologinwith = phonenumber;
-            }
-
-            String payload = "{\n" +
-                    "      message: 'select_location',\n" +
-                    "      payload: {\n" +
-                    "        style: {\n" +
-                    "          base: {\n" +
-                    "            \"color\": \"" + color + "\",\n" +
-                    "            \"name\": \"" + name + "\",\n" +
-                    "            \"logo\": \"" + logo + "\"\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "        user: {\n" +
-                    "      \"firstName\": \"" + firstname + "\",\n" +
-                    "      \"lastName\": \"" + lastname + "\",\n" +
-                    "      \"phone\": \"" + tologinwith + "\"\n" +
-                    "        },\n" +
-                    "        auth: {\n" +
-                    "      \"authToken\": \"" + clientKey + "\"\n" +
-                    "      },\n" +
-                    "        context: {\n" +
-                    "          container: {\n" +
-                    "           \"name\": \"Android App\",\n" +
-                    "            \"version\": \"" + BuildConfig.VERSION_NAME + "\"\n" +
-                    "          },\n" +
-                    "          developer: {\n" +
-                    "            name: 'okhi',\n" +
-                    "          },\n" +
-                    "          library: {\n" +
-                    "           \"name\": \"okCollectMobileAndroid\",\n" +
-                    "          \"version\": \"" + BuildConfig.VERSION_NAME + "\"\n" +
-                    "          },\n" +
-                    "          platform: {\n" +
-                    "            name: 'mobile',\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "        config: {\n" +
-                    "      \"streetView\": \"" + enablestreetview + "\",\n" +
-                    "          appBar: {\n" +
-                    "           \"color\": \"" + appbarcolor + "\",\n" +
-                    "           \"visible\": " + appbarvisible + "\n" +
-                    "          },\n" +
-                    "        },\n" +
-                    "      },\n" +
-                    "    }";
-
-            Log.i("OkHeartActivity", payload.toString());
-            myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + payload + ")", null);
         } catch (Exception e) {
-
         }
     }
 
@@ -313,13 +233,8 @@ public class OkHeartActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         try {
-
-            if (completedWell) {
-
-            } else {
-                if (isWebInterface) {
-
-                } else {
+            if (!(completedWell)) {
+                if (!(isWebInterface)) {
                     final JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("message", "fatal_exit");
                     JSONObject payload1 = new JSONObject();
@@ -327,9 +242,7 @@ public class OkHeartActivity extends AppCompatActivity {
                     jsonObject1.put("payload", payload1);
                     okCollectCallback.querycomplete(jsonObject1);
                 }
-
             }
-
         } catch (Exception e) {
         }
         super.onDestroy();
@@ -357,11 +270,6 @@ public class OkHeartActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return false;
-            /*
-            if (Uri.parse(url).getHost().equals("https://manager-v5.okhi.io")) {
-               return false;
-            } else return !Uri.parse(url).getHost().equals("https://manager-v5.okhi.io");
-            */
         }
 
         @Override

@@ -13,7 +13,7 @@ import io.okcollect.android.utilities.Constants;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "io.okcollect.android.sdk.database.db";
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 19;
 
     private static final String DATABASE_CREATE_STUFF =
             "create table " + Constants.TABLE_NAME_PROPERTY + " (" +

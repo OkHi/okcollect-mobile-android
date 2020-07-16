@@ -1,6 +1,5 @@
 package io.okcollect.android.asynctask;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 
@@ -17,17 +16,16 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
-    private String branchId, clientKey, scope, userid;
+    private String branchId, clientKey, userid;
     private int responseCode;
     private AuthtokenCallback authtokenCallback;
     private String environment;
 
     public AnonymoussigninTask(AuthtokenCallback authtokenCallback, String branchId, String clientKey,
-                               String scope, String userid, String environment) {
+                               String userid, String environment) {
         this.authtokenCallback = authtokenCallback;
         this.branchId = branchId;
         this.clientKey = clientKey;
-        this.scope = scope;
         this.userid = userid;
         this.environment = environment;
     }
@@ -57,7 +55,7 @@ public class AnonymoussigninTask extends AsyncTask<Void, Void, String> {
             final String basicAuth = "Basic " + Base64.encodeToString(branchclient.getBytes(), Base64.NO_WRAP);
 
             RequestBody formBody = new FormBody.Builder()
-                    .add("scopes[0]", scope)
+                    .add("scopes[0]", "address")
                     .add("phone", userid)
                     .build();
 

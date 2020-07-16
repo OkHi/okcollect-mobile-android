@@ -9,13 +9,12 @@ import io.okcollect.android.OkCollect;
 
 
 class WebAppInterface {
-    private static final String TAG = "WebAppInterface";
     OkHeartActivity mContext;
 
     WebAppInterface(OkHeartActivity c) {
         mContext = c;
     }
-    
+
     @JavascriptInterface
     public void receiveMessage(String results) {
 
@@ -24,19 +23,13 @@ class WebAppInterface {
 
             String message = jsonObject.optString("message");
             JSONObject payload = jsonObject.optJSONObject("payload");
-            if (payload != null) {
-
-            } else {
-
+            if (payload == null) {
                 String backuppayload = jsonObject.optString("payload");
                 if (backuppayload != null) {
                     payload = new JSONObject();
                     payload.put("error", backuppayload);
-                } else {
-
                 }
             }
-
             try {
 
                 switch (message) {
@@ -45,7 +38,6 @@ class WebAppInterface {
                             Boolean ready = payload.optBoolean("ready");
                             if (ready != null) {
                                 if (ready) {
-
                                     mContext.runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
@@ -53,11 +45,7 @@ class WebAppInterface {
                                         }
                                     });
                                 }
-                            } else {
-
                             }
-                        } else {
-
                         }
                         break;
                     case "location_created":
