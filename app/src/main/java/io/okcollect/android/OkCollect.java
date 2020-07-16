@@ -41,26 +41,19 @@ public final class OkCollect extends ContentProvider {
 
     public static void initialize(@NonNull final String clientKey, @NonNull final String branchId, @NonNull final String environment) throws RuntimeException {
 
-        displayLog("initialize");
-        //dataProvider.insertStuff("enableverify", ""+verify);
-
         if (clientKey != null) {
             if (clientKey.length() > 0) {
                 startInitialization(clientKey, branchId, environment, false);
-
             } else {
-                throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is correct"));
+                throw new RuntimeException("Initialization error", new Throwable("Confirm your client key is correct"));
             }
         } else {
-            throw new RuntimeException("Initialization error", new Throwable("Confirm your application key is not null"));
+            throw new RuntimeException("Initialization error", new Throwable("Confirm your client key is not null"));
         }
-
     }
 
 
     public static void displayClient(@NonNull OkCollectCallback okCollectCallback, @NonNull JSONObject userObject) throws RuntimeException {
-
-        displayLog("display client " + userObject.toString());
 
         if (userObject != null) {
             if (userObject.length() > 0) {
@@ -77,17 +70,11 @@ public final class OkCollect extends ContentProvider {
                             String verify = "false";
                             File filesDir = new File(mContext.getFilesDir() + "/verify.txt");
                             if (filesDir.exists()) {
-                                displayLog("filesdir exists");
                                 try {
                                     verify = getStringFromFile(filesDir.getAbsolutePath());
-                                    displayLog("verify " + verify);
                                 } catch (Exception e) {
-                                    // Hmm, the applicationId file was malformed or something. Assume it
-                                    // doesn't match.
-                                    displayLog("error " + e.toString());
                                 }
                             } else {
-                                displayLog("filesdir does not exist");
                             }
                             if (verify.equalsIgnoreCase("true")) {
                                 try {
@@ -98,7 +85,6 @@ public final class OkCollect extends ContentProvider {
                                     payloadJson.put("error", "Location permission not granted");
                                     payloadJson.put("message", cause);
                                     responseJson.put("payload", payloadJson);
-                                    displayLog(responseJson.toString());
                                     okCollectCallback.querycomplete(responseJson);
                                 } catch (JSONException jse) {
 
@@ -121,26 +107,21 @@ public final class OkCollect extends ContentProvider {
 
     }
 
-    private static void startInitialization(final String applicationKey, final String branchid, final String environment, final Boolean verify) {
-        displayLog("workmanager startInitialization " + verify);
+    private static void startInitialization(final String clientKey, final String branchid, final String environment, final Boolean verify) {
 
         try {
-            dataProvider.insertStuff("branchid", branchid);
-            dataProvider.insertStuff("environment", environment);
+            dataProvider.insertProperty("branchid", branchid);
+            dataProvider.insertProperty("environment", environment);
         } catch (Exception io) {
-
         } finally {
-
         }
         try {
-            writeToFile(applicationKey);
+            writeToFile(clientKey);
         } catch (Exception io) {
-
         } finally {
-
         }
-        dataProvider.insertStuff("verify", "" + verify);
-        dataProvider.insertStuff("applicationKey", applicationKey);
+        dataProvider.insertProperty("verify", "" + verify);
+        dataProvider.insertProperty("clientKey", clientKey);
 
     }
 
@@ -149,7 +130,6 @@ public final class OkCollect extends ContentProvider {
                                  @NonNull Boolean enableStreetView) {
 
         try {
-            displayLog("okhi customized");
             JSONObject jsonObject = new JSONObject();
             if (appThemeColor != null) {
                 if (appThemeColor.length() > 0) {
@@ -180,9 +160,6 @@ public final class OkCollect extends ContentProvider {
                 jsonObject.put("enablestreetview", enableStreetView);
             }
             String customString = jsonObject.toString();
-            //displayLog("logo "+jsonObject.get("logo"));
-            //String testString = "{\"color\":\"" + appBarColor + "\", \"name\": \"" + organisationName + "\",\"logo\": \"" + appLogo + "\"}";
-            displayLog("custom string " + customString);
             writeToFileCustomize(customString);
 
         } catch (Exception io) {
@@ -193,15 +170,15 @@ public final class OkCollect extends ContentProvider {
     }
 
     private static void startActivity(@NonNull final OkCollectCallback okCollectCallback, @NonNull final JSONObject jsonObject) {
-        displayLog("startActivity");
+
         callback = okCollectCallback;
         firstname = jsonObject.optString("firstName");
         lastname = jsonObject.optString("lastName");
         phonenumber = jsonObject.optString("phone");
         requestSource = "create";
 
-        dataProvider.insertStuff("phonenumber", phonenumber);
-        dataProvider.insertStuff("requestSource", requestSource);
+        dataProvider.insertProperty("phonenumber", phonenumber);
+        dataProvider.insertProperty("requestSource", requestSource);
 
 
         try {
@@ -210,26 +187,21 @@ public final class OkCollect extends ContentProvider {
                 @Override
                 public void querycomplete(String response, boolean success) {
                     if (success) {
-                        displayLog("success response " + response);
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String token = jsonObject.optString("authorization_token");
-                            displayLog("token " + token);
-                            dataProvider.insertStuff("authtoken", token);
+                            dataProvider.insertProperty("authtoken", token);
 
                             Intent intent = new Intent(mContext, io.okcollect.android.activity.OkHeartActivity.class);
                             intent.putExtra("firstname", firstname);
                             intent.putExtra("lastname", lastname);
                             intent.putExtra("phone", phonenumber);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            displayLog("here");
                             mContext.startActivity(intent);
 
                         } catch (Exception e) {
-                            displayLog("error " + e.toString());
                         }
                     } else {
-                        displayLog("failed response " + response);
                         try {
                             JSONObject jsonObject2 = new JSONObject();
                             jsonObject2.put("error", "The credentials you have provided are invalid");
@@ -245,10 +217,9 @@ public final class OkCollect extends ContentProvider {
             };
 
             String branchid = dataProvider.getPropertyValue("branchid");
-            String applicationKey = dataProvider.getPropertyValue("applicationKey");
+            String clientKey = dataProvider.getPropertyValue("clientKey");
             String environment = dataProvider.getPropertyValue("environment");
 
-            displayLog("branchid " + branchid + " clientkey " + applicationKey);
 
             String tologinwith;
             if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
@@ -258,20 +229,17 @@ public final class OkCollect extends ContentProvider {
             }
 
             io.okcollect.android.asynctask.AnonymoussigninTask anonymoussigninTask =
-                    new io.okcollect.android.asynctask.AnonymoussigninTask(mContext, authtokenCallback,
-                            branchid, applicationKey, "verify", tologinwith, environment);
+                    new io.okcollect.android.asynctask.AnonymoussigninTask(authtokenCallback,
+                            branchid, clientKey, "verify", tologinwith, environment);
             anonymoussigninTask.execute();
 
 
         } catch (Exception e) {
-            displayLog("error calling receiveActivity activity " + e.toString());
         }
 
     }
 
     private static String checkPermissionCause() {
-
-        String environment = dataProvider.getPropertyValue("environment");
 
         String permission;
 
@@ -288,10 +256,6 @@ public final class OkCollect extends ContentProvider {
                                 == PackageManager.PERMISSION_GRANTED;
 
                 if (backgroundLocationPermissionApproved) {
-                    // App can access location both in the foreground and in the background.
-                    // Start your service that doesn't have a foreground service type
-                    // defined.
-
                     permission = "Manifest.permission.ACCESS_BACKGROUND_LOCATION granted";
 
                 } else {
@@ -357,10 +321,6 @@ public final class OkCollect extends ContentProvider {
         return permission;
     }
 
-    private static void displayLog(String log) {
-        ////Log.i(TAG, log);
-    }
-
     private static void writeToFile(String customString) {
         try {
             File path = mContext.getFilesDir();
@@ -368,10 +328,9 @@ public final class OkCollect extends ContentProvider {
             if (!file.exists()) {
                 FileOutputStream stream = new FileOutputStream(file);
                 try {
-
                     stream.write(customString.getBytes());
                 } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
+
                 } finally {
                     stream.close();
                 }
@@ -379,23 +338,19 @@ public final class OkCollect extends ContentProvider {
                 file.delete();
                 FileOutputStream stream = new FileOutputStream(file);
                 try {
-
                     stream.write(customString.getBytes());
                 } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
                 } finally {
                     stream.close();
                 }
             }
 
         } catch (Exception e) {
-            displayLog("write to file error " + e.toString());
-
         }
 
     }
 
-    private static void writeToFileCustomize(String apiKey) {
+    private static void writeToFileCustomize(String clientKey) {
         try {
             File path = mContext.getFilesDir();
             File file = new File(path, "custom.txt");
@@ -403,9 +358,8 @@ public final class OkCollect extends ContentProvider {
                 FileOutputStream stream = new FileOutputStream(file);
                 try {
 
-                    stream.write(apiKey.getBytes());
+                    stream.write(clientKey.getBytes());
                 } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
                 } finally {
                     stream.close();
                 }
@@ -414,17 +368,13 @@ public final class OkCollect extends ContentProvider {
                 FileOutputStream stream = new FileOutputStream(file);
                 try {
 
-                    stream.write(apiKey.getBytes());
+                    stream.write(clientKey.getBytes());
                 } catch (Exception e) {
-                    displayLog("filestream error " + e.toString());
                 } finally {
                     stream.close();
                 }
             }
-
         } catch (Exception e) {
-            displayLog("write to file error " + e.toString());
-
         }
 
     }
@@ -433,12 +383,9 @@ public final class OkCollect extends ContentProvider {
         return callback;
     }
 
-    public static void setCallback(OkCollectCallback callback) {
-        OkCollect.callback = callback;
-    }
 
     private static String convertStreamToString(InputStream is) throws IOException {
-        displayLog("convertStreamToString1");
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line = null;
@@ -452,18 +399,15 @@ public final class OkCollect extends ContentProvider {
             }
         }
         reader.close();
-        displayLog("convertStreamToString2");
         return sb.toString();
     }
 
     private static String getStringFromFile(String filePath) throws IOException {
-        displayLog("getStringFromFile1");
+
         File fl = new File(filePath);
         FileInputStream fin = new FileInputStream(fl);
         String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
         fin.close();
-        displayLog("getStringFromFile2");
         return ret;
     }
 
@@ -497,10 +441,8 @@ public final class OkCollect extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        // get the context (Application context)
         mContext = getContext();
         dataProvider = new io.okcollect.android.database.DataProvider(mContext);
-
         return true;
     }
 

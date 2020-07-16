@@ -17,7 +17,7 @@
         android:launchMode="singleInstance"
         android:supportsRtl="true">
 
-        <!--
+
         <activity
             android:name="io.okcollect.android.activity.TestActivity"
             android:theme="@style/AppTheme">
@@ -29,7 +29,7 @@
             </intent-filter>
 
         </activity>
-        -->
+
         <activity
             android:name="io.okcollect.android.activity.OkHeartActivity"
             android:exported="true"

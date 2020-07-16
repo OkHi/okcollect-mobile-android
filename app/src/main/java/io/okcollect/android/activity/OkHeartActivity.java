@@ -2,7 +2,6 @@ package io.okcollect.android.activity;
 
 import android.Manifest;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import io.okcollect.android.BuildConfig;
 import io.okcollect.android.OkCollect;
 import io.okcollect.android.callback.OkCollectCallback;
 
@@ -32,21 +32,15 @@ public class OkHeartActivity extends AppCompatActivity {
 
     private static final String TAG = "OkHeartActivity";
     private static WebView myWebView;
-    private static JSONObject jsonObject;
-    private static Double lat, lng;
-    private static Float acc;
-    private static String firstname, lastname, phonenumber, apiKey, color, name, logo, appbarcolor;
+    private static String firstname, lastname, phonenumber, clientKey, color, name, logo, appbarcolor;
     private static Boolean appbarvisible, enablestreetview;
     private static OkCollectCallback okCollectCallback;
     private static boolean completedWell, isWebInterface;
-    private static String uniqueId;
-    private static String verify;
     private static io.okcollect.android.database.DataProvider dataProvider;
     private static String environment;
 
 
     private static String convertStreamToString(InputStream is) throws IOException {
-        //displayLog("convertStreamToString1");
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
         String line = null;
@@ -60,35 +54,19 @@ public class OkHeartActivity extends AppCompatActivity {
             }
         }
         reader.close();
-        //displayLog("convertStreamToString2");
         return sb.toString();
     }
 
     private static String getStringFromFile(String filePath) throws IOException {
-        //displayLog("getStringFromFile1");
         File fl = new File(filePath);
         FileInputStream fin = new FileInputStream(fl);
         String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
         fin.close();
-        //displayLog("getStringFromFile2");
         return ret;
-    }
-
-    private static void displayLog(String log) {
-        // //Log.i(TAG, log);
-    }
-
-    private static boolean isCompletedWell() {
-        return completedWell;
     }
 
     public static void setCompletedWell(boolean completedWell) {
         OkHeartActivity.completedWell = completedWell;
-    }
-
-    private static boolean isIsWebInterface() {
-        return isWebInterface;
     }
 
     public static void setIsWebInterface(boolean isWebInterface) {
@@ -99,61 +77,41 @@ public class OkHeartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(io.okcollect.android.R.layout.activity_okheart);
-        displayLog("start");
         dataProvider = new io.okcollect.android.database.DataProvider(this);
         environment = dataProvider.getPropertyValue("environment");
-        apiKey = dataProvider.getPropertyValue("authtoken");
-        displayLog("environment " + environment);
+        clientKey = dataProvider.getPropertyValue("authtoken");
 
         completedWell = false;
         isWebInterface = false;
-        //checkInternet();
-        lat = null;
-        lng = null;
-        acc = null;
+
         color = null;
         name = null;
         logo = null;
-        verify = "false";
-
-
         try {
             Bundle bundle = getIntent().getExtras();
             try {
                 firstname = bundle.getString("firstname");
             } catch (Exception e) {
-                displayLog("firstname error " + e.toString());
             }
 
             try {
                 lastname = bundle.getString("lastname");
             } catch (Exception e) {
-                displayLog("lastname error " + e.toString());
             }
             try {
                 phonenumber = bundle.getString("phone");
             } catch (Exception e) {
-                displayLog("phonenumber error " + e.toString());
             }
-            try {
-                uniqueId = bundle.getString("uniqueId");
-            } catch (Exception e) {
-                displayLog("uniqueId error " + e.toString());
-            }
-            //apiKey = dataProvider.getPropertyValue("applicationKey");
-            displayLog("applicationKey" + apiKey);
 
             File filesDirCustom = new File(getFilesDir() + "/custom.txt");
             if (filesDirCustom.exists()) {
-                displayLog("custom dir exists");
                 try {
                     String customString = getStringFromFile(filesDirCustom.getAbsolutePath());
-                    displayLog("custom string " + customString);
                     if (customString != null) {
                         if (customString.length() > 0) {
                             JSONObject jsonObject = new JSONObject(customString);
                             String tempColor = jsonObject.optString("color", "rgb(0, 131, 143)");
-                            String tempName = jsonObject.optString("name", "interswitch");
+                            String tempName = jsonObject.optString("name", "OKHI");
                             String tempLogo = jsonObject.optString("logo", "https://cdn.okhi.co/okhi-logo-white.svg");
                             String tempappbarcolor = jsonObject.optString("appbarcolor", "#f0f0f0");
                             Boolean tempappbarvisible = jsonObject.optBoolean("appbarvisibility", false);
@@ -189,12 +147,7 @@ public class OkHeartActivity extends AppCompatActivity {
                         }
                     }
                 } catch (Exception e) {
-                    // Hmm, the applicationId file was malformed or something. Assume it
-                    // doesn't match.
-                    displayLog("error " + e.toString());
                 }
-            } else {
-                displayLog("custom dir does not exist");
             }
 
         } catch (Exception e) {
@@ -218,17 +171,13 @@ public class OkHeartActivity extends AppCompatActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setDomStorageEnabled(true);
-        myWebView.addJavascriptInterface(new WebAppInterface(OkHeartActivity.this, apiKey), "Android");
-        //myWebView.loadUrl("https://manager-v5.okhi.dev");
-        //myWebView.loadUrl("https://7b70b228.ngrok.io");
+        myWebView.addJavascriptInterface(new WebAppInterface(OkHeartActivity.this), "Android");
 
 
         if (environment != null) {
             if (environment.length() > 0) {
                 if (environment.equalsIgnoreCase("PROD")) {
                     myWebView.loadUrl("https://manager-v5.okhi.io");
-                } else if (environment.equalsIgnoreCase("DEVMASTER")) {
-                    myWebView.loadUrl("https://dev-manager-v5.okhi.io");
                 } else if (environment.equalsIgnoreCase("SANDBOX")) {
                     myWebView.loadUrl("https://sandbox-manager-v5.okhi.io");
                 } else {
@@ -250,20 +199,12 @@ public class OkHeartActivity extends AppCompatActivity {
 
         try {
             okCollectCallback = OkCollect.getCallback();
-            if (okCollectCallback != null) {
-                displayLog("okheartcallback is not null");
-            } else {
-                displayLog("okheartcallback is null");
-            }
         } catch (Exception e) {
-            displayLog("error calling back " + e.toString());
         }
 
     }
 
     public void startApp() {
-        //checkInternet();
-        displayLog("startApp ");
 
         try {
             if (color != null) {
@@ -278,10 +219,10 @@ public class OkHeartActivity extends AppCompatActivity {
                 if (name.length() > 0) {
 
                 } else {
-                    name = "interswitch";
+                    name = "OKHI";
                 }
             } else {
-                name = "interswitch";
+                name = "OKHI";
             }
             if (logo != null) {
                 if (logo.length() > 0) {
@@ -308,13 +249,8 @@ public class OkHeartActivity extends AppCompatActivity {
             }
             if (enablestreetview != null) {
             } else {
-                enablestreetview = false;
+                enablestreetview = true;
             }
-
-
-            displayLog("color " + color + " name " + name + " logo " + logo);
-            displayLog("appbarcolor " + appbarcolor + " appbarvisible " + appbarvisible + " enablestreetview " + enablestreetview);
-
             String tologinwith;
             if ((phonenumber.startsWith("07")) && (phonenumber.length() == 10)) {
                 tologinwith = "+2547" + phonenumber.substring(2);
@@ -338,19 +274,19 @@ public class OkHeartActivity extends AppCompatActivity {
                     "      \"phone\": \"" + tologinwith + "\"\n" +
                     "        },\n" +
                     "        auth: {\n" +
-                    "      \"authToken\": \"" + apiKey + "\"\n" +
+                    "      \"authToken\": \"" + clientKey + "\"\n" +
                     "      },\n" +
                     "        context: {\n" +
                     "          container: {\n" +
                     "           \"name\": \"Android App\",\n" +
-                    "            \"version\": \"2.0.4\"\n" +
+                    "            \"version\": \"" + BuildConfig.VERSION_NAME + "\"\n" +
                     "          },\n" +
                     "          developer: {\n" +
                     "            name: 'okhi',\n" +
                     "          },\n" +
                     "          library: {\n" +
                     "           \"name\": \"okCollectMobileAndroid\",\n" +
-                    "            \"version\": \"2.0.4\"\n" +
+                    "          \"version\": \"" + BuildConfig.VERSION_NAME + "\"\n" +
                     "          },\n" +
                     "          platform: {\n" +
                     "            name: 'mobile',\n" +
@@ -365,10 +301,11 @@ public class OkHeartActivity extends AppCompatActivity {
                     "        },\n" +
                     "      },\n" +
                     "    }";
-            displayLog(payload);
+
+            Log.i("OkHeartActivity", payload.toString());
             myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + payload + ")", null);
         } catch (Exception e) {
-            displayLog("jsonexception error " + e.toString());
+
         }
     }
 
@@ -388,14 +325,12 @@ public class OkHeartActivity extends AppCompatActivity {
                     JSONObject payload1 = new JSONObject();
                     payload1.put("Error", "Address creation did not complete");
                     jsonObject1.put("payload", payload1);
-                    displayLog(jsonObject.toString());
                     okCollectCallback.querycomplete(jsonObject1);
                 }
 
             }
 
         } catch (Exception e) {
-            displayLog("error calling back 1 " + e.toString());
         }
         super.onDestroy();
     }
@@ -411,37 +346,27 @@ public class OkHeartActivity extends AppCompatActivity {
     }
 
     private class MyWebViewClient extends WebViewClient {
-        private static final String TAG = "MyWebViewClient";
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             // TODO Auto-generated method stub
             super.onPageStarted(view, url, favicon);
-            displayLog("onPageStarted");
         }
 
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            displayLog("shouldOverrideUrlLoading");
+            return false;
+            /*
             if (Uri.parse(url).getHost().equals("https://manager-v5.okhi.io")) {
-                // This is my website, so do not override; let my WebView load the page
-
-                return false;
-            } else return !Uri.parse(url).getHost().equals("https://dev-manager-v5.okhi.io");
-            // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
-            //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            //startActivity(intent);
+               return false;
+            } else return !Uri.parse(url).getHost().equals("https://manager-v5.okhi.io");
+            */
         }
 
         @Override
         public void onPageFinished(WebView view, String urlString) {
-            displayLog("onPageFinished loadVariables(newURL) " + urlString);
 
-        }
-
-        private void displayLog(String log) {
-            //Log.i(TAG, log);
         }
     }
 }
