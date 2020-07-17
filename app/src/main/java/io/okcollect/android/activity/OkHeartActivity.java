@@ -3,6 +3,7 @@ package io.okcollect.android.activity;
 import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -55,44 +56,52 @@ public class OkHeartActivity extends AppCompatActivity {
             try {
                 firstname = bundle.getString("firstname");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
 
             try {
                 lastname = bundle.getString("lastname");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 phonenumber = bundle.getString("phone");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 appThemeColor = bundle.getString("appThemeColor");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 appBarVisibility = bundle.getBoolean("appBarVisibility");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 appBarColor = bundle.getString("appBarColor");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 appLogo = bundle.getString("appLogo");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
-
             try {
                 organisationName = bundle.getString("organisationName");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
             try {
                 enableStreetView = bundle.getBoolean("enableStreetView");
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
 
         } catch (Exception e) {
-
+            //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
         }
 
 
@@ -104,7 +113,6 @@ public class OkHeartActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         }, 0);
 
-
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setLoadsImagesAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
@@ -114,8 +122,6 @@ public class OkHeartActivity extends AppCompatActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setDomStorageEnabled(true);
         myWebView.addJavascriptInterface(new WebAppInterface(OkHeartActivity.this), "Android");
-
-
         if (environment != null) {
             if (environment.length() > 0) {
                 if (environment.equalsIgnoreCase("PROD")) {
@@ -131,23 +137,20 @@ public class OkHeartActivity extends AppCompatActivity {
         } else {
             myWebView.loadUrl("https://manager-v5.okhi.io");
         }
-
         myWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 callback.invoke(origin, true, false);
             }
         });
-
         try {
             okCollectCallback = OkCollect.getCallback();
         } catch (Exception e) {
+            //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
         }
-
     }
 
     public void startApp() {
-
         String authorization_token = dataProvider.getPropertyValue("authorization_token");
         try {
             try {
@@ -224,8 +227,10 @@ public class OkHeartActivity extends AppCompatActivity {
                 jsonObject.put("payload", payload1);
                 myWebView.evaluateJavascript("javascript:receiveAndroidMessage(" + jsonObject.toString().replace("\\", "") + ")", null);
             } catch (Exception e) {
+                //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
             }
         } catch (Exception e) {
+            //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
         }
     }
 
@@ -244,6 +249,7 @@ public class OkHeartActivity extends AppCompatActivity {
                 }
             }
         } catch (Exception e) {
+            //Log.i("OkHeartActivity", "get bundle parameter error "+e.toString());
         }
         super.onDestroy();
     }
@@ -254,7 +260,6 @@ public class OkHeartActivity extends AppCompatActivity {
             myWebView.goBack();
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -265,8 +270,6 @@ public class OkHeartActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
             super.onPageStarted(view, url, favicon);
         }
-
-
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             return false;
@@ -274,7 +277,6 @@ public class OkHeartActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView view, String urlString) {
-
         }
     }
 }
