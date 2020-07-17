@@ -15,7 +15,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "io.okcollect.android.sdk.database.db";
     private static final int DATABASE_VERSION = 19;
 
-    private static final String DATABASE_CREATE_STUFF =
+    private static final String DATABASE_CREATE_PROPERTY =
             "create table " + Constants.TABLE_NAME_PROPERTY + " (" +
                     io.okcollect.android.utilities.Constants.COLUMN_ID + " integer primary key autoincrement, " +
                     io.okcollect.android.utilities.Constants.COLUMN_PROPERTY + " VARCHAR NOT NULL UNIQUE, " +
@@ -28,7 +28,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(DATABASE_CREATE_STUFF);
+        database.execSQL(DATABASE_CREATE_PROPERTY);
     }
 
     @Override
