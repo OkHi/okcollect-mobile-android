@@ -189,7 +189,7 @@ public class OkHeartActivity extends AppCompatActivity {
 
                 JSONObject context = new JSONObject();
                 JSONObject container = new JSONObject();
-                container.put("name", "okCollectWebAndroid");
+                container.put("name", "okCollectMobileAndroid");
                 container.put("version", BuildConfig.VERSION_NAME);
                 context.put("container", container);
 
@@ -198,7 +198,7 @@ public class OkHeartActivity extends AppCompatActivity {
                 context.put("developer", developer);
 
                 JSONObject library = new JSONObject();
-                library.put("name", "okCollectWebAndroid");
+                library.put("name", "okCollectMobileAndroid");
                 library.put("version", BuildConfig.VERSION_NAME);
                 context.put("library", library);
 
